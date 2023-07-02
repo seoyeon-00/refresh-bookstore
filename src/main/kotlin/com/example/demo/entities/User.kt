@@ -14,6 +14,6 @@ object Users : IntIdTable() {
   val address: Column<String> = varchar("address", 100)
   val detailaddress: Column<String> = varchar("detailaddress", 100)
   val phone: Column<String> = varchar("phone", 20)
-  val isadmin: Column<Boolean> = bool("isadmin")
+  val isadmin: Column<Boolean> = bool("isadmin").default(false)
   val createdat: Column<LocalDateTime> = datetime("createdat").default(LocalDateTime.now())
 }

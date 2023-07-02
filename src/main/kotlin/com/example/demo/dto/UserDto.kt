@@ -13,8 +13,8 @@ data class UserDto(
   val address: String,
   val detailaddress: String,
   val phone: String,
-  val isadmin: Boolean,
-  val createdat: LocalDateTime
+  val isadmin: Boolean?,
+  val createdat: LocalDateTime?
 ) {
     companion object {
         fun fromRow(row: ResultRow): UserDto {
