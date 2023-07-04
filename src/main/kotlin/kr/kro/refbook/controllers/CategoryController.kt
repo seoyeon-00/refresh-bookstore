@@ -1,7 +1,7 @@
-package com.example.demo.controllers
+package kr.kro.refbook.controllers
 
-import com.example.demo.dto.CategoryDto
-import com.example.demo.services.CategoryService
+import kr.kro.refbook.dto.CategoryDto
+import kr.kro.refbook.services.CategoryService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

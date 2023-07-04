@@ -1,7 +1,7 @@
-package com.example.demo.repositories
+package kr.kro.refbook.repositories
 
-import com.example.demo.dto.UserDto
-import com.example.demo.entities.Users
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository

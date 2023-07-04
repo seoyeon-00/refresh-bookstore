@@ -1,7 +1,7 @@
-package com.example.demo.services
+package kr.kro.refbook.services
 
-import com.example.demo.dto.UserDto
-import com.example.demo.repositories.UserRepository
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.repositories.UserRepository
 import org.springframework.stereotype.Service
 
 @Service

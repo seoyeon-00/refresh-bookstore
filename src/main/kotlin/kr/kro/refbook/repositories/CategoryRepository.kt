@@ -1,7 +1,7 @@
-package com.example.demo.repositories
+package kr.kro.refbook.repositories
 
-import com.example.demo.entities.Category
-import com.example.demo.entities.Categories
+import kr.kro.refbook.entities.Category
+import kr.kro.refbook.entities.Categories
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 

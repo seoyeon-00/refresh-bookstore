@@ -1,4 +1,4 @@
-package com.example.demo.dto
+package kr.kro.refbook.dto
 
 data class CategoryDto(
     val id: Int?,

@@ -1,11 +1,11 @@
-package com.example.demo.dto
+package kr.kro.refbook.dto
 
 import java.time.LocalDateTime
-import com.example.demo.entities.Users
+import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.ResultRow
 
 data class UserDto(
-  val id: Int, 
+  val id: Int,
   val name: String,
   val email: String,
   val password: String,

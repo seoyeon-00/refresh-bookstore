@@ -1,7 +1,7 @@
-package com.example.demo.controllers
+package kr.kro.refbook.controllers
 
-import com.example.demo.dto.UserDto
-import com.example.demo.services.UserService
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 

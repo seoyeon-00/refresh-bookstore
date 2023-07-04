@@ -1,4 +1,4 @@
-package com.example.demo.config
+package kr.kro.refbook.config
 
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv

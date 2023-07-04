@@ -1,8 +1,8 @@
-package com.example.demo.services
+package kr.kro.refbook.services
 
-import com.example.demo.entities.Category
-import com.example.demo.dto.CategoryDto
-import com.example.demo.repositories.CategoryRepository
+import kr.kro.refbook.entities.Category
+import kr.kro.refbook.dto.CategoryDto
+import kr.kro.refbook.repositories.CategoryRepository
 import org.springframework.stereotype.Service
 
 @Service

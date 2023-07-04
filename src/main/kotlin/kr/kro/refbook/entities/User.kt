@@ -1,4 +1,4 @@
-package com.example.demo.entities
+package kr.kro.refbook.entities
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
