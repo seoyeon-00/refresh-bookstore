@@ -5,7 +5,7 @@ import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.ResultRow
 
 data class UserDto(
-  val id: Int,
+  val id: Int, 
   val name: String,
   val email: String,
   val password: String,
@@ -13,8 +13,8 @@ data class UserDto(
   val address: String,
   val detailaddress: String,
   val phone: String,
-  val isadmin: Boolean,
-  val createdat: LocalDateTime
+  val isadmin: Boolean?,
+  val createdat: LocalDateTime?
 ) {
     companion object {
         fun fromRow(row: ResultRow): UserDto {
