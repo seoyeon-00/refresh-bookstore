@@ -31,6 +31,10 @@ dependencies {
     //postgressql dependencies
     implementation("org.postgresql:postgresql")
 
+    //redis dependencies
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-web")
+
     //exposed dependencies
     implementation("org.jetbrains.exposed:exposed-java-time:0.35.1")
     implementation("org.jetbrains.exposed:exposed-core:0.35.1")

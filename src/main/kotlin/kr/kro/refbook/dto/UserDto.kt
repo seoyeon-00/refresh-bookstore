@@ -9,12 +9,12 @@ data class UserDto(
   val name: String,
   val email: String,
   val password: String,
-  val postalcode: String,
+  val postalCode: String,
   val address: String,
-  val detailaddress: String,
+  val detailAddress: String,
   val phone: String,
-  val isadmin: Boolean?,
-  val createdat: LocalDateTime?
+  val isAdmin: Boolean?,
+  val createdAt: LocalDateTime?
 ) {
     companion object {
         fun fromRow(row: ResultRow): UserDto {
@@ -23,12 +23,12 @@ data class UserDto(
                 name = row[Users.name],
                 email = row[Users.email],
                 password = row[Users.password],
-                postalcode = row[Users.postalcode],
+                postalCode = row[Users.postalCode],
                 address = row[Users.address],
-                detailaddress = row[Users.detailaddress],
+                detailAddress = row[Users.detailAddress],
                 phone = row[Users.phone],
-                isadmin = row[Users.isadmin],
-                createdat = row[Users.createdat]
+                isAdmin = row[Users.isAdmin],
+                createdAt = row[Users.createdAt]
             )
         }
     }

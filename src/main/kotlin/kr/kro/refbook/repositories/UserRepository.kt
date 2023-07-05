@@ -29,9 +29,9 @@ class UserRepository{
                 it[name] = userDto.name
                 it[email] = userDto.email
                 it[password] = userDto.password
-                it[postalcode] = userDto.postalcode
+                it[postalCode] = userDto.postalCode
                 it[address] = userDto.address
-                it[detailaddress] = userDto.detailaddress
+                it[detailAddress] = userDto.detailAddress
                 it[phone] = userDto.phone
                 // it[isadmin] = userDto.isadmin
                 // it[createdat] = LocalDateTime.now()
@@ -46,9 +46,9 @@ class UserRepository{
                 it[name] = userDto.name
                 it[email] = userDto.email
                 it[password] = userDto.password
-                it[postalcode] = userDto.postalcode
+                it[postalCode] = userDto.postalCode
                 it[address] = userDto.address
-                it[detailaddress] = userDto.detailaddress
+                it[detailAddress] = userDto.detailAddress
                 it[phone] = userDto.phone
             }
             if (updatedRowCount > 0) {
