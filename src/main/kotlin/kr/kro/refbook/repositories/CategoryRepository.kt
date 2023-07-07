@@ -1,12 +1,19 @@
 package kr.kro.refbook.repositories
 
-import kr.kro.refbook.entities.Category
-import kr.kro.refbook.entities.Categories
+import kr.kro.refbook.entities.tables.Categories
+import kr.kro.refbook.entities.models.Category
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
 @Repository
 class CategoryRepository {
+
+    init {
+        transaction {
+            SchemaUtils.create(Categories)
+        }
+    }
 
     fun findAll(): List<Category> = transaction {
         Category.all().toList()
@@ -16,17 +23,17 @@ class CategoryRepository {
         Category.findById(id)
     }
 
-    fun create(name: String, categoryId: Int): Category = transaction {
+    // categoryId 매개변수를 제거하고 name만 사용합니다.
+    fun create(name: String): Category = transaction {
         Category.new {
             this.name = name
-            this.categoryId = categoryId
         }
     }
 
-    fun update(id: Int, name: String, categoryId: Int): Category? = transaction {
+    // categoryId 매개변수를 제거하고 name만 사용합니다.
+    fun update(id: Int, name: String): Category? = transaction {
         Category.findById(id)?.apply {
             this.name = name
-            this.categoryId = categoryId
         }
     }
 
