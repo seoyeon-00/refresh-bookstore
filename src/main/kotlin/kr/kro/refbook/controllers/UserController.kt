@@ -1,14 +1,14 @@
-// package kr.kro.refbook.controllers
+package kr.kro.refbook.controllers
 
-// import kr.kro.refbook.dto.UserDto
-// import kr.kro.refbook.services.UserService
-// import org.springframework.beans.factory.annotation.Autowired
-// import org.springframework.http.ResponseEntity
-// import org.springframework.web.bind.annotation.*
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.services.UserService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 
-// @RestController
-// @RequestMapping("/users")
-// class UserController {
+@RestController
+@RequestMapping("/users")
+class UserController {
 
 //   @Autowired
 //   lateinit var userService: UserService
@@ -47,4 +47,4 @@
 //           ResponseEntity.notFound().build()
 //       }
 //   }
-// }
+}
