@@ -10,37 +10,40 @@ import org.springframework.stereotype.Service
 @Service
 class ProductService(private val productRepository: ProductRepository) {
 
-    fun getAllProducts(): List<ProductDto> =
+    fun getAllProducts(): List<ProductDto> = transaction {
         productRepository.findAll().map { product ->
             toDto(product)
         }
+    }
 
-    fun getProductById(id: Int): ProductDto? =
+    fun getProductById(id: Int): ProductDto? = transaction {
         productRepository.findById(id)?.let { toDto(it) }
-
+    }
 
     fun createProduct(productDto: ProductDto): ProductDto = transaction {
-        // Category 객체를 먼저 검색 또는 생성합니다.
         val category = Category.findById(productDto.categoryId)
         ?: throw IllegalArgumentException("No category with id ${productDto.categoryId} found.")
 
         productRepository.create(
-        category.id.value,
-        productDto.title,
-        productDto.author,
-        productDto.publisher,
-        productDto.publicationDate,
-        productDto.isbn,
-        productDto.description,
-        productDto.price,
-        productDto.imagePath,
-        productDto.isBestSeller
-    ).let { toDto(it) }
+            category.id.value,
+            productDto.title,
+            productDto.author,
+            productDto.publisher,
+            productDto.publicationDate,
+            productDto.isbn,
+            productDto.description,
+            productDto.price,
+            productDto.imagePath,
+            productDto.isBestSeller
+        ).let { toDto(it) }
     }
 
-    fun updateProduct(id: Int, productDto: ProductDto): ProductDto? =
+    fun updateProduct(id: Int, productDto: ProductDto): ProductDto? = transaction {
+        val productToUpdate = productRepository.findById(id)
+        ?: throw IllegalArgumentException("No product with id $id found.")
+
         productRepository.update(
-            id,
+            productToUpdate.id.value,
             productDto.title,
             productDto.author,
             productDto.publisher,
@@ -51,8 +54,14 @@ class ProductService(private val productRepository: ProductRepository) {
             productDto.imagePath,
             productDto.isBestSeller
         )?.let { toDto(it) }
+    }
 
-    fun deleteProduct(id: Int): Boolean = productRepository.delete(id)
+    fun deleteProduct(id: Int): Boolean = transaction {
+        val productToDelete = productRepository.findById(id)
+        ?: throw IllegalArgumentException("No product with id $id found.")
+
+        productRepository.delete(productToDelete.id.value)
+    }
 
     private fun toDto(product: Product): ProductDto =
         ProductDto(
