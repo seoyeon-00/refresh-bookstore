@@ -1,50 +1,28 @@
 package kr.kro.refbook.controllers
 
 import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import jakarta.validation.Valid
+import kr.kro.refbook.common.authority.TokenInfo
+import kr.kro.refbook.common.dto.BaseResponse
 
 @RestController
-@RequestMapping("/users")
-class UserController {
+@RequestMapping("/api/user")
+class UserController(private val userService: UserService) {
 
-//   @Autowired
-//   lateinit var userService: UserService
+  @PostMapping("/signup")
+  fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
+    return userService.signUp(userDto)
+  }
 
-//   @GetMapping
-//     fun getAllUsers(): ResponseEntity<List<UserDto>> {
-//         return ResponseEntity.ok(userService.getAllUsers())
-//     }
+  @PostMapping("/login")
+  fun login(@RequestBody @Valid loginDto: LoginDto): BaseResponse<TokenInfo> {
+    val tokenInfo = userService.login(loginDto)
+    return BaseResponse(data = tokenInfo)
+  }
 
-//   @GetMapping("/{id}")
-//     fun getUserById(@PathVariable id: Int): ResponseEntity<List<UserDto>> {
-//         return ResponseEntity.ok(userService.getUserById(id))
-//     }
-
-//   @PostMapping
-//     fun createUsers(@RequestBody userDto: UserDto): ResponseEntity<UserDto> {
-//         val createdUser = userService.createUser(userDto)
-//         return ResponseEntity.ok(createdUser)
-//     }
-
-//   @PutMapping("/{id}")
-//     fun updateUser(@PathVariable id: Int, @RequestBody userDto: UserDto): ResponseEntity<UserDto> {
-//       val updatedUser = userService.updateUser(id, userDto)
-//       return if (updatedUser != null) {
-//         ResponseEntity.ok(updatedUser)
-//       } else {
-//         ResponseEntity.notFound().build()
-//       }
-//     }
-
-//   @DeleteMapping("/{id}")
-//     fun deleteUser(@PathVariable id: Int): ResponseEntity<Unit> {
-//       return if (userService.deleteUser(id)) {
-//           ResponseEntity.ok().build()
-//       } else {
-//           ResponseEntity.notFound().build()
-//       }
-//   }
 }

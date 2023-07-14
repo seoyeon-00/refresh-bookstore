@@ -1,67 +1,56 @@
 package kr.kro.refbook.repositories
 
 import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.entities.User
 import kr.kro.refbook.entities.Users
+import kr.kro.refbook.entities.MemberRole
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import kr.kro.refbook.common.status.ROLE
 
 @Repository
 class UserRepository{
+    fun findByEmail(email: String): User? = transaction {
+        User.find { Users.email eq email }.singleOrNull()
+    }
 
-    // fun findAll(): List<UserDto> {
-    //     return transaction {
-    //         Users.selectAll().map { UserDto.fromRow(it) }
-    //     }
-    // }
+    fun create(userDto: UserDto): User = transaction {
+        User.new {
+            name = userDto.name
+            email = userDto.email
+            password = userDto.password
+            postalCode = userDto.postalCode
+            address = userDto.address
+            detailAddress = userDto.detailAddress
+            phone = userDto.phone
+            isAdmin = userDto.isAdmin ?: false
+            createdAt = userDto.createdAt ?: LocalDateTime.now()
+        }.apply {
+            memberRoles // 추가: memberRoles 참조 추가
+        }
+    }
+}
 
-    // fun findById(id: Int): UserDto {
-    //     return transaction {
-    //         Users.select { Users.id eq id }.mapNotNull { UserDto.fromRow(it) }.singleOrNull()
-    //     } ?: throw NoSuchElementException("User not found")
-    // }
 
-    // fun create(userDto: UserDto): UserDto {
-    //     return transaction {
-    //         val id = Users.insertAndGetId {
-    //             it[name] = userDto.name
-    //             it[email] = userDto.email
-    //             it[password] = userDto.password
-    //             it[postalcode] = userDto.postalcode
-    //             it[address] = userDto.address
-    //             it[detailaddress] = userDto.detailaddress
-    //             it[phone] = userDto.phone
-    //             // it[isadmin] = userDto.isadmin
-    //             // it[createdat] = LocalDateTime.now()
-    //         }
-    //         userDto.copy(id = id.value)
-    //     }
-    // }
+@Repository
+class MemberRoleRepository {
+    fun create(memberRole: MemberRole): MemberRole = transaction {
+        val savedMemberRole = MemberRole.new {
+            role = memberRole.role
+            member = memberRole.member
+        }
+        savedMemberRole
+    }
 
-    // fun update(id:Int, userDto: UserDto): UserDto? {
-    //     return transaction {
-    //         val updatedRowCount = Users.update({ Users.id eq id }) {
-    //             it[name] = userDto.name
-    //             it[email] = userDto.email
-    //             it[password] = userDto.password
-    //             it[postalcode] = userDto.postalcode
-    //             it[address] = userDto.address
-    //             it[detailaddress] = userDto.detailaddress
-    //             it[phone] = userDto.phone
-    //         }
-    //         if (updatedRowCount > 0) {
-    //             UserDto.fromRow(Users.select { Users.id eq id }.singleOrNull() ?: throw RuntimeException("User not found"))
-    //         } else {
-    //             throw RuntimeException("Update failed")
-    //         }
-    //     }
-    // }
+    fun createMemberRole(user: User, role: ROLE): MemberRole = transaction {
+        val memberRole = MemberRole.new {
+            this.role = role
+            member = user
+        }
+        memberRole
+    }
 
-    // fun delete(id: Int): Int {
-    //     return transaction {
-    //         Users.deleteWhere { Users.id eq id }
-    //     }
-    // }
 }
