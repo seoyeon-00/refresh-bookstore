@@ -1,6 +1,5 @@
 package kr.kro.refbook.services
 
-import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.repositories.UserRepository
 import org.springframework.stereotype.Service
 
@@ -26,5 +25,4 @@ class UserService(private val userRepository: UserRepository) {
     // fun deleteUser(id:Int): Boolean {
     //     return userRepository.delete(id) > 0
     // }
-
 }

@@ -1,10 +1,10 @@
 package kr.kro.refbook.services
 
-import kr.kro.refbook.entities.models.Product
-import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.dto.ProductDto
-import org.jetbrains.exposed.sql.transactions.transaction
+import kr.kro.refbook.entities.models.Category
+import kr.kro.refbook.entities.models.Product
 import kr.kro.refbook.repositories.ProductRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,7 +22,7 @@ class ProductService(private val productRepository: ProductRepository) {
 
     fun createProduct(productDto: ProductDto): ProductDto = transaction {
         val category = Category.findById(productDto.categoryId)
-        ?: throw IllegalArgumentException("No category with id ${productDto.categoryId} found.")
+            ?: throw IllegalArgumentException("No category with id ${productDto.categoryId} found.")
 
         productRepository.create(
             category.id.value,
@@ -34,13 +34,13 @@ class ProductService(private val productRepository: ProductRepository) {
             productDto.description,
             productDto.price,
             productDto.imagePath,
-            productDto.isBestSeller
+            productDto.isBestSeller,
         ).let { toDto(it) }
     }
 
     fun updateProduct(id: Int, productDto: ProductDto): ProductDto? = transaction {
         val productToUpdate = productRepository.findById(id)
-        ?: throw IllegalArgumentException("No product with id $id found.")
+            ?: throw IllegalArgumentException("No product with id $id found.")
 
         productRepository.update(
             productToUpdate.id.value,
@@ -52,13 +52,13 @@ class ProductService(private val productRepository: ProductRepository) {
             productDto.description,
             productDto.price,
             productDto.imagePath,
-            productDto.isBestSeller
+            productDto.isBestSeller,
         )?.let { toDto(it) }
     }
 
     fun deleteProduct(id: Int): Boolean = transaction {
         val productToDelete = productRepository.findById(id)
-        ?: throw IllegalArgumentException("No product with id $id found.")
+            ?: throw IllegalArgumentException("No product with id $id found.")
 
         productRepository.delete(productToDelete.id.value)
     }
@@ -75,6 +75,6 @@ class ProductService(private val productRepository: ProductRepository) {
             description = product.description,
             price = product.price,
             imagePath = product.imagePath,
-            isBestSeller = product.isBestSeller
+            isBestSeller = product.isBestSeller,
         )
 }

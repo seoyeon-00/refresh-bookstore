@@ -1,20 +1,20 @@
 package kr.kro.refbook.dto
 
-import java.time.LocalDateTime
 import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.ResultRow
+import java.time.LocalDateTime
 
 data class UserDto(
-  val id: Int,
-  val name: String,
-  val email: String,
-  val password: String,
-  val postalCode: String,
-  val address: String,
-  val detailAddress: String,
-  val phone: String,
-  val isAdmin: Boolean?,
-  val createdAt: LocalDateTime?
+    val id: Int,
+    val name: String,
+    val email: String,
+    val password: String,
+    val postalCode: String,
+    val address: String,
+    val detailAddress: String,
+    val phone: String,
+    val isAdmin: Boolean?,
+    val createdAt: LocalDateTime?,
 ) {
     companion object {
         fun fromRow(row: ResultRow): UserDto {
@@ -28,7 +28,7 @@ data class UserDto(
                 detailAddress = row[Users.detailAddress],
                 phone = row[Users.phone],
                 isAdmin = row[Users.isAdmin],
-                createdAt = row[Users.createdAt]
+                createdAt = row[Users.createdAt],
             )
         }
     }

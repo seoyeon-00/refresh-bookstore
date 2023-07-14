@@ -14,5 +14,5 @@ data class ProductDto(
     val description: String,
     val price: BigDecimal,
     val imagePath: String,
-    val isBestSeller: Boolean
+    val isBestSeller: Boolean,
 )

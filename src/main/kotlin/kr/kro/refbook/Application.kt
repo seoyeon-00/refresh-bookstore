@@ -1,8 +1,8 @@
 package kr.kro.refbook
 
+import kr.kro.refbook.config.DatabaseConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import kr.kro.refbook.config.DatabaseConfig
 
 @SpringBootApplication
 class Application

@@ -1,15 +1,10 @@
 package kr.kro.refbook.repositories
 
-import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.entities.Users
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
 
 @Repository
-class UserRepository{
+class UserRepository {
 
     // fun findAll(): List<UserDto> {
     //     return transaction {

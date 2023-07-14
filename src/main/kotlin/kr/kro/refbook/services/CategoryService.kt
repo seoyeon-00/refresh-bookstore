@@ -1,7 +1,7 @@
 package kr.kro.refbook.services
 
-import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.dto.CategoryDto
+import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.repositories.CategoryRepository
 import org.springframework.stereotype.Service
 
@@ -20,6 +20,6 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
 
     private fun toDto(category: Category): CategoryDto = CategoryDto(
         id = category.id.value,
-        name = category.name
+        name = category.name,
     )
 }

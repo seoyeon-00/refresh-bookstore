@@ -5,9 +5,9 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.datetime
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.math.BigDecimal
 
 object Products : IntIdTable() {
     val category: Column<EntityID<Int>> = reference("category_id", Categories)

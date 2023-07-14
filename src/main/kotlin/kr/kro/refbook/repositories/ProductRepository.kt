@@ -1,14 +1,12 @@
 package kr.kro.refbook.repositories
 
 import kr.kro.refbook.entities.models.Product
-import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.entities.tables.Products
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
-import java.time.LocalDate
 import java.math.BigDecimal
-import kr.kro.refbook.repositories.CategoryRepository
+import java.time.LocalDate
 
 @Repository
 class ProductRepository(private val categoryRepository: CategoryRepository) {
@@ -37,10 +35,10 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         description: String,
         price: BigDecimal,
         imagePath: String,
-        isBestSeller: Boolean
+        isBestSeller: Boolean,
     ): Product = transaction {
         val category = categoryRepository.findById(categoryId)
-        ?: throw IllegalArgumentException("Invalid category ID")
+            ?: throw IllegalArgumentException("Invalid category ID")
 
         println("Category: $category")
 
@@ -70,7 +68,7 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         description: String,
         price: BigDecimal,
         imagePath: String,
-        isBestSeller: Boolean
+        isBestSeller: Boolean,
     ): Product? = transaction {
         Product.findById(id)?.apply {
             this.title = title

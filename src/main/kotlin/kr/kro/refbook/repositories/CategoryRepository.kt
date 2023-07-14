@@ -1,7 +1,7 @@
 package kr.kro.refbook.repositories
 
-import kr.kro.refbook.entities.tables.Categories
 import kr.kro.refbook.entities.models.Category
+import kr.kro.refbook.entities.tables.Categories
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
