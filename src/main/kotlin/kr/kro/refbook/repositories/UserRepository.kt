@@ -10,9 +10,12 @@ import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import kr.kro.refbook.common.status.ROLE
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Repository
-class UserRepository{
+class UserRepository(
+    private val passwordEncoder: PasswordEncoder
+){
     fun findByEmail(email: String): User? = transaction {
         User.find { Users.email eq email }.singleOrNull()
     }
@@ -21,6 +24,7 @@ class UserRepository{
         User.new {
             name = userDto.name
             email = userDto.email
+            //password = passwordEncoder.encode(userDto.password)
             password = userDto.password
             postalCode = userDto.postalCode
             address = userDto.address

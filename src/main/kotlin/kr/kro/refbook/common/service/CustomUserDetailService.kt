@@ -24,6 +24,8 @@ class CustomUserDetailsService(
         org.springframework.security.core.userdetails.User(
             user.email,
             passwordEncoder.encode(user.password),
-            user.memberRoles!!.map { SimpleGrantedAuthority("ROLE_${it.role}") }
+            //user.memberRole!!.map { SimpleGrantedAuthority("ROLE_${it.role}") }
+            user.memberRoles?.map { SimpleGrantedAuthority("ROLE_${it.role}") } ?: emptyList()
+            //user.memberRoles?.map { SimpleGrantedAuthority("ROLE_${it.role}") } ?: error("User roles must not be null.")
         )
 }
