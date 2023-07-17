@@ -46,6 +46,10 @@ dependencies {
     implementation("io.github.cdimascio:java-dotenv:5.1.3")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
+    // logger dependencies
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.14.1")
+    
 	//JWT
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
