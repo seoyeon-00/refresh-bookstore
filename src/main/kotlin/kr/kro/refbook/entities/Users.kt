@@ -10,6 +10,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import java.time.LocalDateTime
 import kr.kro.refbook.common.status.ROLE
 import kr.kro.refbook.entities.MemberRoles
+import org.jetbrains.exposed.sql.transactions.transaction
 
 object Users : IntIdTable() {
     val name: Column<String> = varchar("name", 50)
@@ -38,4 +39,9 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var createdAt by Users.createdAt
 
     val memberRoles by MemberRole referrersOn MemberRoles.member
+
+    fun fetchMemberRoles(): List<MemberRole> = transaction {
+        MemberRole.find { MemberRoles.member eq this@User.id }
+            .toList()
+    }
 }

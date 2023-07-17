@@ -20,12 +20,13 @@ class CustomUserDetailsService(
         userRepository.findByEmail(username)
             ?.let { createUserDetails(it) } ?: throw UsernameNotFoundException("해당 유저는 없습니다.")
 
-    private fun createUserDetails(user: User): UserDetails =
-        org.springframework.security.core.userdetails.User(
+    private fun createUserDetails(user: User): UserDetails {
+        val memberRoles = user.fetchMemberRoles()
+        val authorities = memberRoles.map { SimpleGrantedAuthority("ROLE_${it.role}") }
+        return org.springframework.security.core.userdetails.User(
             user.email,
             passwordEncoder.encode(user.password),
-            //user.memberRole!!.map { SimpleGrantedAuthority("ROLE_${it.role}") }
-            user.memberRoles?.map { SimpleGrantedAuthority("ROLE_${it.role}") } ?: emptyList()
-            //user.memberRoles?.map { SimpleGrantedAuthority("ROLE_${it.role}") } ?: error("User roles must not be null.")
+            authorities
         )
+    }
 }
