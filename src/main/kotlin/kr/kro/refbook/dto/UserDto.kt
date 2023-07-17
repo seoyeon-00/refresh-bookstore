@@ -50,3 +50,13 @@ data class LoginDto (
   @field:NotBlank
   val password: String,
 )
+
+data class UserDtoResponse(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val postalCode: String,
+    val address: String,
+    val detailAddress: String,
+    val phone: String,
+)

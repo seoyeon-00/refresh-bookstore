@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
+import kr.kro.refbook.dto.UserDtoResponse
+import org.springframework.security.core.context.SecurityContextHolder
 
 @RestController
 @RequestMapping("/api/user")
@@ -24,5 +26,12 @@ class UserController(private val userService: UserService) {
     val tokenInfo = userService.login(loginDto)
     return BaseResponse(data = tokenInfo)
   }
+
+  @GetMapping("/info/{id}")
+    fun searchMyInfo(@PathVariable id: Int): BaseResponse<UserDtoResponse> {
+        //val userId = (SecurityContextHolder.getContext().authentication.principal as UserDto).id
+        val response = userService.searchUser(id)
+        return BaseResponse(data = response)
+    }
 
 }

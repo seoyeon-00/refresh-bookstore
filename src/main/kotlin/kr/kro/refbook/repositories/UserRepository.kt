@@ -33,9 +33,16 @@ class UserRepository(
             isAdmin = userDto.isAdmin ?: false
             createdAt = userDto.createdAt ?: LocalDateTime.now()
         }.apply {
-            memberRoles // 추가: memberRoles 참조 추가
+            memberRoles 
         }
     }
+
+    fun findById(id: Int): User? {
+        return transaction {
+            User.findById(id)
+        }
+    }
+    
 }
 
 

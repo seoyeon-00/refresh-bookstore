@@ -2,7 +2,6 @@ package kr.kro.refbook.entities
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
-// import org.jetbrains.exposed.sql.`java-time`.datetime
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.IntEntity
@@ -10,6 +9,7 @@ import org.jetbrains.exposed.dao.IntEntityClass
 import java.time.LocalDateTime
 import kr.kro.refbook.common.status.ROLE
 import kr.kro.refbook.entities.MemberRoles
+import kr.kro.refbook.dto.UserDtoResponse
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Users : IntIdTable() {
@@ -43,5 +43,17 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     fun fetchMemberRoles(): List<MemberRole> = transaction {
         MemberRole.find { MemberRoles.member eq this@User.id }
             .toList()
+    }
+
+    fun toDtoResponse(): UserDtoResponse {
+        return UserDtoResponse(
+            id = id.value,
+            name = name,
+            email = email,
+            postalCode = postalCode,
+            address = address,
+            detailAddress = detailAddress,
+            phone = phone
+        )
     }
 }

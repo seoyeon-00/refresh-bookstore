@@ -3,6 +3,7 @@ package kr.kro.refbook.services
 import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.dto.MemberRoleDto
+import kr.kro.refbook.dto.UserDtoResponse
 import kr.kro.refbook.entities.User
 import kr.kro.refbook.entities.MemberRole
 import kr.kro.refbook.repositories.UserRepository
@@ -43,6 +44,11 @@ class UserService(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
         return jwtTokenProvider.createToken(authentication)
+    }
+
+    fun searchUser(id: Int): UserDtoResponse {
+        val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "회원번호(${id})가 존재하지 않는 유저입니다.")
+        return user.toDtoResponse()
     }
 
     private fun toDto(user: User): UserDto = UserDto(
