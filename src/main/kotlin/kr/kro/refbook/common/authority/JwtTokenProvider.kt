@@ -1,6 +1,6 @@
 package kr.kro.refbook.common.authority
 
-// import com.example.demo.common.dto.CustomUser
+import kr.kro.refbook.common.dto.CustomUser
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -24,9 +24,8 @@ class JwtTokenProvider {
 
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)) }
 
-    /**
-     * Token 생성
-     */
+    
+    // Token 생성   
     fun createToken(authentication: Authentication): TokenInfo {
         val authorities: String = authentication
             .authorities
@@ -40,7 +39,7 @@ class JwtTokenProvider {
             .builder()
             .setSubject(authentication.name)
             .claim("auth", authorities)
-            // .claim("userId", (authentication.principal as CustomUser).userId)
+            .claim("userId", (authentication.principal as CustomUser).userId)
             .setIssuedAt(now)
             .setExpiration(accessExpiration)
             .signWith(key, SignatureAlgorithm.HS256)
@@ -49,29 +48,27 @@ class JwtTokenProvider {
         return TokenInfo("Bearer", accessToken)
     }
 
-    /**
-     * Token 정보 추출
-     */
+
+    // Token 정보 추출
     fun getAuthentication(token: String): Authentication {
         val claims: Claims = getClaims(token)
 
         val auth = claims["auth"] ?: throw RuntimeException("잘못된 토큰입니다.")
-        //val userId = claims["userId"] ?: throw RuntimeException("잘못된 토큰입니다.")
+        val userId = claims["userId"] ?: throw RuntimeException("잘못된 토큰입니다.")
 
         // 권한 정보 추출
         val authorities: Collection<GrantedAuthority> = (auth as String)
             .split(",")
             .map { SimpleGrantedAuthority(it) }
 
-        //val principal: UserDetails = CustomUser(userId.toString().toLong(), claims.subject, "", authorities)
-        val principal: UserDetails = User(claims.subject, "", authorities)
+        val principal: UserDetails = CustomUser(userId.toString().toInt(), claims.subject, "", authorities)
+        //val principal: UserDetails = User(claims.subject, "", authorities)
 
         return UsernamePasswordAuthenticationToken(principal, "", authorities)
     }
 
-    /**
-     * Token 검증
-     */
+
+    // Token 검증
     fun validateToken(token: String): Boolean {
         try {
             getClaims(token)

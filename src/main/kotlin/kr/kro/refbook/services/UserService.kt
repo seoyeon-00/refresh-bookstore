@@ -51,6 +51,11 @@ class UserService(
         return user.toDtoResponse()
     }
 
+    fun searchUserAll(): List<UserDtoResponse> {
+        val userList: List<User> = userRepository.findAll()
+        return userList.map { it.toDtoResponse() }
+    }
+
     private fun toDto(user: User): UserDto = UserDto(
         id = user.id.value,
         name = user.name,

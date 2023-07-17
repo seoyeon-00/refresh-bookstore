@@ -42,7 +42,12 @@ class UserRepository(
             User.findById(id)
         }
     }
-    
+
+    fun findAll(): List<User> {
+        return transaction {
+            User.all().toList()
+        }
+    }
 }
 
 

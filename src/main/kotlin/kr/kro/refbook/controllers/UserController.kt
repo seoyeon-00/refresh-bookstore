@@ -11,6 +11,7 @@ import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.dto.UserDtoResponse
 import org.springframework.security.core.context.SecurityContextHolder
+import kr.kro.refbook.common.dto.CustomUser
 
 @RestController
 @RequestMapping("/api/user")
@@ -27,11 +28,23 @@ class UserController(private val userService: UserService) {
     return BaseResponse(data = tokenInfo)
   }
 
-  @GetMapping("/info/{id}")
-    fun searchMyInfo(@PathVariable id: Int): BaseResponse<UserDtoResponse> {
-        //val userId = (SecurityContextHolder.getContext().authentication.principal as UserDto).id
-        val response = userService.searchUser(id)
+  @GetMapping("/{id}")
+  fun searchMyInfo(@PathVariable id: Int): BaseResponse<UserDtoResponse> {
+      val response = userService.searchUser(id)
+      return BaseResponse(data = response)
+  }
+
+  @GetMapping("/info")
+  fun searchMyInfo(): BaseResponse<UserDtoResponse> {
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val response = userService.searchUser(userId)
         return BaseResponse(data = response)
     }
+
+  @GetMapping
+  fun searchMyInfoAll(): BaseResponse<List<UserDtoResponse>> {
+      val response = userService.searchUserAll()
+      return BaseResponse(data = response)
+  }
 
 }

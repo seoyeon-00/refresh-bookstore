@@ -23,7 +23,8 @@ class CustomUserDetailsService(
     private fun createUserDetails(user: User): UserDetails {
         val memberRoles = user.fetchMemberRoles()
         val authorities = memberRoles.map { SimpleGrantedAuthority("ROLE_${it.role}") }
-        return org.springframework.security.core.userdetails.User(
+        return CustomUser(
+            user.id.value.toInt(),
             user.email,
             passwordEncoder.encode(user.password),
             authorities
