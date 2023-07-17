@@ -1,46 +1,50 @@
 package kr.kro.refbook.controllers
 
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.dto.LoginDto
+import kr.kro.refbook.services.UserService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import jakarta.validation.Valid
+import kr.kro.refbook.common.authority.TokenInfo
+import kr.kro.refbook.common.dto.BaseResponse
+import kr.kro.refbook.dto.UserDtoResponse
+import org.springframework.security.core.context.SecurityContextHolder
+import kr.kro.refbook.common.dto.CustomUser
 
 @RestController
-@RequestMapping("/users")
-class UserController {
+@RequestMapping("/api/user")
+class UserController(private val userService: UserService) {
 
-//   @Autowired
-//   lateinit var userService: UserService
+  @PostMapping("/signup")
+  fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
+    return userService.signUp(userDto)
+  }
 
-//   @GetMapping
-//     fun getAllUsers(): ResponseEntity<List<UserDto>> {
-//         return ResponseEntity.ok(userService.getAllUsers())
-//     }
+  @PostMapping("/login")
+  fun login(@RequestBody @Valid loginDto: LoginDto): BaseResponse<TokenInfo> {
+    val tokenInfo = userService.login(loginDto)
+    return BaseResponse(data = tokenInfo)
+  }
 
-//   @GetMapping("/{id}")
-//     fun getUserById(@PathVariable id: Int): ResponseEntity<List<UserDto>> {
-//         return ResponseEntity.ok(userService.getUserById(id))
-//     }
+  // @GetMapping("/{id}")
+  // fun searchMyInfo(@PathVariable id: Int): BaseResponse<UserDtoResponse> {
+  //     val response = userService.searchUser(id)
+  //     return BaseResponse(data = response)
+  // }
 
-//   @PostMapping
-//     fun createUsers(@RequestBody userDto: UserDto): ResponseEntity<UserDto> {
-//         val createdUser = userService.createUser(userDto)
-//         return ResponseEntity.ok(createdUser)
-//     }
+  @GetMapping("/info")
+  fun searchMyInfo(): BaseResponse<UserDtoResponse> {
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val response = userService.searchUser(userId)
+        return BaseResponse(data = response)
+    }
 
-//   @PutMapping("/{id}")
-//     fun updateUser(@PathVariable id: Int, @RequestBody userDto: UserDto): ResponseEntity<UserDto> {
-//       val updatedUser = userService.updateUser(id, userDto)
-//       return if (updatedUser != null) {
-//         ResponseEntity.ok(updatedUser)
-//       } else {
-//         ResponseEntity.notFound().build()
-//       }
-//     }
+  @GetMapping
+  fun searchMyInfoAll(): BaseResponse<List<UserDtoResponse>> {
+      val response = userService.searchUserAll()
+      return BaseResponse(data = response)
+  }
 
-//   @DeleteMapping("/{id}")
-//     fun deleteUser(@PathVariable id: Int): ResponseEntity<Unit> {
-//       return if (userService.deleteUser(id)) {
-//           ResponseEntity.ok().build()
-//       } else {
-//           ResponseEntity.notFound().build()
-//       }
-//   }
 }
