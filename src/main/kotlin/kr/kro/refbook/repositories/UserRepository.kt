@@ -4,6 +4,7 @@ import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.entities.User
 import kr.kro.refbook.entities.Users
 import kr.kro.refbook.entities.MemberRole
+import kr.kro.refbook.entities.MemberRoles
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.*
@@ -16,6 +17,14 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class UserRepository(
     private val passwordEncoder: PasswordEncoder
 ){
+
+    init {
+        transaction {
+            SchemaUtils.create(Users)
+            SchemaUtils.create(MemberRoles)
+        }
+    }
+
     fun findByEmail(email: String): User? = transaction {
         User.find { Users.email eq email }.singleOrNull()
     }
