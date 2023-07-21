@@ -4,6 +4,7 @@ import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.services.UserService
+import kr.kro.refbook.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,10 +14,18 @@ import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.dto.UserDtoResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import kr.kro.refbook.common.dto.CustomUser
+import org.springframework.security.crypto.bcrypt.BCrypt
+import org.springframework.security.core.AuthenticationException
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @RestController
 @RequestMapping("/api/user")
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService, 
+    private val userRepository: UserRepository,
+    private val bcryptPasswordEncoder: BCryptPasswordEncoder,
+) {
 
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
@@ -25,8 +34,21 @@ class UserController(private val userService: UserService) {
 
     @PostMapping("/login")
     fun login(@RequestBody @Valid loginDto: LoginDto): BaseResponse<TokenInfo> {
-      val tokenInfo = userService.login(loginDto)
-      return BaseResponse(data = tokenInfo)
+        val user = userRepository.findByEmail(loginDto.email)
+
+        if (user != null) {
+            val hashedPassword = user.password 
+            println("hashedPassword: $hashedPassword")
+            println("password: ${loginDto.password}")
+
+            if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
+
+                val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
+                val tokenInfo = userService.login(loginDtoWithHashedPassword)
+                return BaseResponse(data = tokenInfo)
+            }
+        }
+        throw BadCredentialsException("Invalid email or password")
     }
 
     // @GetMapping("/{id}")
@@ -49,7 +71,7 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping
-    fun updateUser(@RequestBody @Valid userDto: UserDto): BaseResponse<UserDto> {
+    fun updateUser(@RequestBody userDto: UserDto): BaseResponse<UserDto> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
         userDto.id = userId
         val response = userService.updateUser(userDto) 

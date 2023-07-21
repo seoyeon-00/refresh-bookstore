@@ -15,7 +15,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object Users : IntIdTable() {
     val name: Column<String> = varchar("name", 50)
     val email: Column<String> = varchar("email", 50).uniqueIndex()
-    val password: Column<String> = varchar("password", 100)
+    val password: Column<String> = varchar("password", 200)
     val postalCode: Column<String> = varchar("postalCode", 10)
     val address: Column<String> = varchar("address", 100)
     val detailAddress: Column<String> = varchar("detailAddress", 100)

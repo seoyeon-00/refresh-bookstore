@@ -12,9 +12,13 @@ import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import kr.kro.refbook.common.status.ROLE
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+
 
 @Repository
-class UserRepository{
+class UserRepository(
+    private val bcryptPasswordEncoder: BCryptPasswordEncoder
+){
 
     init {
         transaction {
@@ -31,7 +35,7 @@ class UserRepository{
         User.new {
             name = userDto.name
             email = userDto.email
-            password = userDto.password
+            password = bcryptPasswordEncoder.encode(userDto.password)
             postalCode = userDto.postalCode
             address = userDto.address
             detailAddress = userDto.detailAddress
@@ -61,11 +65,14 @@ class UserRepository{
         if (userDto.email != user.email) {
             throw IllegalArgumentException("Email cannot be changed")
         }
+        
+        if (userDto.password != user.password) {
+            user.password = bcryptPasswordEncoder.encode(userDto.password)
+        }
 
         user.apply {
             name = userDto.name
             //email = userDto.email
-            password = userDto.password
             postalCode = userDto.postalCode
             address = userDto.address
             detailAddress = userDto.detailAddress

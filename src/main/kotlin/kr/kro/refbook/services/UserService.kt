@@ -16,7 +16,6 @@ import kr.kro.refbook.common.authority.TokenInfo
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @Service
@@ -25,7 +24,6 @@ class UserService(
     private val memberRoleRepository: MemberRoleRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val passwordEncoder: PasswordEncoder,
 ) {
 
     //회원가입
@@ -80,7 +78,7 @@ class UserService(
         id = user.id.value,
         name = user.name,
         email = user.email,
-        password = passwordEncoder.encode(user.password),
+        password = user.password,
         postalCode = user.postalCode,
         address = user.address,
         detailAddress = user.detailAddress,
