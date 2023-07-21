@@ -30,11 +30,5 @@ object DatabaseConfig {
             user = dbUser,
             password = dbPassword,
         )
-
-        //데이터베이스 트랜잭션 블록 내에서 테이블 생성
-        // transaction {
-        //     SchemaUtils.create(Users)
-        //     SchemaUtils.create(MemberRoles) 
-        // }
     }
 }

@@ -16,6 +16,7 @@ import kr.kro.refbook.common.authority.TokenInfo
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.jetbrains.exposed.sql.transactions.transaction
 
 @Service
 class UserService(
@@ -56,6 +57,23 @@ class UserService(
         return userList.map { it.toDtoResponse() }
     }
 
+    fun updateUserRole(memberId: Int, memberRoleDto: MemberRoleDto): MemberRoleDto = transaction {
+        val updatedMemberRole = memberRoleRepository.update(memberId, memberRoleDto)
+        toRoleDto(updatedMemberRole ?: throw IllegalArgumentException("No member role with id $memberId found."))
+    }
+
+    fun updateUser(userDto: UserDto): UserDto {
+        val user = userRepository.update(userDto)
+        return toDto(user)
+    }
+
+    fun deleteUser(id: Int): Boolean {
+        val userToDelete = userRepository.findById(id)
+            ?: throw IllegalArgumentException("No product with id $id found.")
+        
+        return userRepository.delete(userToDelete.id.value)
+    }
+
     private fun toDto(user: User): UserDto = UserDto(
         id = user.id.value,
         name = user.name,
@@ -67,5 +85,11 @@ class UserService(
         phone = user.phone,
         isAdmin = user.isAdmin,
         createdAt = user.createdAt,
+    )
+
+    private fun toRoleDto(memberRole: MemberRole): MemberRoleDto = MemberRoleDto(
+        id = memberRole.id.value,
+        role = memberRole.role,
+        member = memberRole.member.id.value,
     )
 }

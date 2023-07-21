@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import org.jetbrains.exposed.sql.ResultRow
 
 data class UserDto(
-  val id: Int, 
+  var id: Int, 
 
   @field:NotBlank
   val name: String,
