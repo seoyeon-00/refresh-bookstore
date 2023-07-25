@@ -57,4 +57,5 @@ data class UserDtoResponse(
     val address: String,
     val detailAddress: String,
     val phone: String,
+    val isAdmin: Boolean,
 )

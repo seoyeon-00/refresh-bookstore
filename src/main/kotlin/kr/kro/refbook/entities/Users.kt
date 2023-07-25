@@ -51,6 +51,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
             address = address,
             detailAddress = detailAddress,
             phone = phone,
+            isAdmin = isAdmin,
         )
     }
 }

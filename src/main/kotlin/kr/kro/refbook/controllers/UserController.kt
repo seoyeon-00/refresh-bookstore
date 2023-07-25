@@ -59,7 +59,7 @@ class UserController(
         return BaseResponse(data = response)
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     fun searchMyInfoAll(): BaseResponse<List<UserDtoResponse>> {
         val response = userService.searchUserAll()
         return BaseResponse(data = response)
