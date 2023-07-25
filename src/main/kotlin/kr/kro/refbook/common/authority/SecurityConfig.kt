@@ -24,7 +24,7 @@ class SecurityConfig(
                 it.requestMatchers("/api/user/signup", "/api/user/login", "/api/user/admin/role/{id}").anonymous()
                     // .requestMatchers("/api/user/**").hasRole("MEMBER")
                     .requestMatchers("/api/user", "/api/user/info").hasAnyRole("MEMBER","ADMIN")
-                    .requestMatchers("/api/user", "/api/user/info", "/api/user/admin/{id}", "/api/user/admin").hasRole("ADMIN")
+                    .requestMatchers("/api/user/admin/{id}", "/api/user/admin").hasRole("ADMIN")
                     .anyRequest().permitAll()
             }
             .addFilterBefore(
