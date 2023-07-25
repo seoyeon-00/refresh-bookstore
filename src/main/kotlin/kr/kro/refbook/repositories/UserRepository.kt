@@ -1,24 +1,22 @@
 package kr.kro.refbook.repositories
 
-import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.common.status.ROLE
 import kr.kro.refbook.dto.MemberRoleDto
-import kr.kro.refbook.entities.User
-import kr.kro.refbook.entities.Users
+import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.entities.MemberRole
 import kr.kro.refbook.entities.MemberRoles
-import org.jetbrains.exposed.sql.selectAll
-import org.jetbrains.exposed.sql.transactions.transaction
+import kr.kro.refbook.entities.User
+import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
-import kr.kro.refbook.common.status.ROLE
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-
 
 @Repository
 class UserRepository(
-    private val bcryptPasswordEncoder: BCryptPasswordEncoder
-){
+    private val bcryptPasswordEncoder: BCryptPasswordEncoder,
+) {
 
     init {
         transaction {
@@ -43,7 +41,7 @@ class UserRepository(
             isAdmin = userDto.isAdmin ?: false
             createdAt = userDto.createdAt ?: LocalDateTime.now()
         }.apply {
-            memberRoles 
+            memberRoles
         }
     }
 
@@ -65,35 +63,34 @@ class UserRepository(
         if (userDto.email != user.email) {
             throw IllegalArgumentException("Email cannot be changed")
         }
-        
+
         if (userDto.password != user.password) {
             user.password = bcryptPasswordEncoder.encode(userDto.password)
         }
 
         user.apply {
             name = userDto.name
-            //email = userDto.email
+            // email = userDto.email
             postalCode = userDto.postalCode
             address = userDto.address
             detailAddress = userDto.detailAddress
             phone = userDto.phone
             isAdmin = userDto.isAdmin ?: false
         }
-        user 
+        user
     }
 
     fun delete(id: Int): Boolean = transaction {
         val user = User.findById(id)
         user?.let {
             user.memberRoles.forEach { memberRole ->
-                memberRole.delete() 
+                memberRole.delete()
             }
-            user.delete() 
+            user.delete()
             true
-        }?: false
+        } ?: false
     }
 }
-
 
 @Repository
 class MemberRoleRepository {
@@ -123,5 +120,4 @@ class MemberRoleRepository {
         }
         memberRole
     }
-
 }

@@ -7,5 +7,5 @@ class CustomUser(
     val userId: Int,
     userName: String,
     password: String,
-    authorities: Collection<GrantedAuthority>
+    authorities: Collection<GrantedAuthority>,
 ) : User(userName, password, authorities)

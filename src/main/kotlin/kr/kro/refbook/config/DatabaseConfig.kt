@@ -2,11 +2,7 @@ package kr.kro.refbook.config
 
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
-import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import kr.kro.refbook.entities.MemberRoles
 
 val dotenv: Dotenv = dotenv()
 

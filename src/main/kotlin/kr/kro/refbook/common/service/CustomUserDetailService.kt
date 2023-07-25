@@ -27,7 +27,7 @@ class CustomUserDetailsService(
             user.id.value.toInt(),
             user.email,
             passwordEncoder.encode(user.password),
-            authorities 
+            authorities,
         )
     }
 }

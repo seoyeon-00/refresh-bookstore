@@ -1,35 +1,31 @@
 package kr.kro.refbook.controllers
 
-import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.dto.LoginDto
-import kr.kro.refbook.dto.MemberRoleDto
-import kr.kro.refbook.services.UserService
-import kr.kro.refbook.repositories.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
-import kr.kro.refbook.dto.UserDtoResponse
-import org.springframework.security.core.context.SecurityContextHolder
 import kr.kro.refbook.common.dto.CustomUser
-import org.springframework.security.crypto.bcrypt.BCrypt
-import org.springframework.security.core.AuthenticationException
+import kr.kro.refbook.dto.LoginDto
+import kr.kro.refbook.dto.MemberRoleDto
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.dto.UserDtoResponse
+import kr.kro.refbook.repositories.UserRepository
+import kr.kro.refbook.services.UserService
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/user")
 class UserController(
-    private val userService: UserService, 
+    private val userService: UserService,
     private val userRepository: UserRepository,
     private val bcryptPasswordEncoder: BCryptPasswordEncoder,
 ) {
 
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
-      return userService.signUp(userDto)
+        return userService.signUp(userDto)
     }
 
     @PostMapping("/login")
@@ -37,12 +33,11 @@ class UserController(
         val user = userRepository.findByEmail(loginDto.email)
 
         if (user != null) {
-            val hashedPassword = user.password 
+            val hashedPassword = user.password
             println("hashedPassword: $hashedPassword")
             println("password: ${loginDto.password}")
 
             if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
-
                 val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
                 val tokenInfo = userService.login(loginDtoWithHashedPassword)
                 return BaseResponse(data = tokenInfo)
@@ -59,10 +54,10 @@ class UserController(
 
     @GetMapping("/info")
     fun searchMyInfo(): BaseResponse<UserDtoResponse> {
-          val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-          val response = userService.searchUser(userId)
-          return BaseResponse(data = response)
-      }
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val response = userService.searchUser(userId)
+        return BaseResponse(data = response)
+    }
 
     @GetMapping
     fun searchMyInfoAll(): BaseResponse<List<UserDtoResponse>> {
@@ -74,7 +69,7 @@ class UserController(
     fun updateUser(@RequestBody userDto: UserDto): BaseResponse<UserDto> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
         userDto.id = userId
-        val response = userService.updateUser(userDto) 
+        val response = userService.updateUser(userDto)
         return BaseResponse(data = response, message = "User updated successfully")
     }
 
@@ -97,15 +92,14 @@ class UserController(
 
     @DeleteMapping
     fun deleteUser(): BaseResponse<Unit> {
+        val id = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val response = userService.deleteUser(id)
+        val message = if (response) {
+            "User deleted successfully"
+        } else {
+            "User not found"
+        }
 
-      val id = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-      val response = userService.deleteUser(id)
-      val message = if (response) {
-          "User deleted successfully"
-      } else {
-          "User not found"
-      }
-        
-      return BaseResponse(message = message)
+        return BaseResponse(message = message)
     }
 }

@@ -1,16 +1,14 @@
 package kr.kro.refbook.entities
 
+import kr.kro.refbook.dto.UserDtoResponse
+import org.jetbrains.exposed.dao.IntEntity
+import org.jetbrains.exposed.dao.IntEntityClass
+import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.javatime.datetime
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.dao.IntEntity
-import org.jetbrains.exposed.dao.IntEntityClass
-import java.time.LocalDateTime
-import kr.kro.refbook.common.status.ROLE
-import kr.kro.refbook.entities.MemberRoles
-import kr.kro.refbook.dto.UserDtoResponse
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.LocalDateTime
 
 object Users : IntIdTable() {
     val name: Column<String> = varchar("name", 50)
@@ -22,12 +20,11 @@ object Users : IntIdTable() {
     val phone: Column<String> = varchar("phone", 20)
     val isAdmin: Column<Boolean> = bool("isAdmin").default(false)
     val createdAt: Column<LocalDateTime> = datetime("createdAt").default(LocalDateTime.now())
-
 }
 
 class User(id: EntityID<Int>) : IntEntity(id) {
     companion object : IntEntityClass<User>(Users)
-    
+
     var name by Users.name
     var email by Users.email
     var password by Users.password
@@ -53,7 +50,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
             postalCode = postalCode,
             address = address,
             detailAddress = detailAddress,
-            phone = phone
+            phone = phone,
         )
     }
 }

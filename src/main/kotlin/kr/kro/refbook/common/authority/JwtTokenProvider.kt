@@ -1,21 +1,20 @@
 package kr.kro.refbook.common.authority
 
-import kr.kro.refbook.common.dto.CustomUser
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import kr.kro.refbook.common.dto.CustomUser
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.util.*
 import kotlin.RuntimeException
 
-const val EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 30 //30분
+const val EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 30 // 30분
 
 @Component
 class JwtTokenProvider {
@@ -24,8 +23,7 @@ class JwtTokenProvider {
 
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)) }
 
-    
-    // Token 생성   
+    // Token 생성
     fun createToken(authentication: Authentication): TokenInfo {
         val authorities: String = authentication
             .authorities
@@ -48,7 +46,6 @@ class JwtTokenProvider {
         return TokenInfo("Bearer", accessToken)
     }
 
-
     // Token 정보 추출
     fun getAuthentication(token: String): Authentication {
         val claims: Claims = getClaims(token)
@@ -62,11 +59,10 @@ class JwtTokenProvider {
             .map { SimpleGrantedAuthority(it) }
 
         val principal: UserDetails = CustomUser(userId.toString().toInt(), claims.subject, "", authorities)
-        //val principal: UserDetails = User(claims.subject, "", authorities)
+        // val principal: UserDetails = User(claims.subject, "", authorities)
 
         return UsernamePasswordAuthenticationToken(principal, "", authorities)
     }
-
 
     // Token 검증
     fun validateToken(token: String): Boolean {
@@ -75,12 +71,12 @@ class JwtTokenProvider {
             return true
         } catch (e: Exception) {
             when (e) {
-                is SecurityException -> {}  // Invalid JWT Token
-                is MalformedJwtException -> {}  // Invalid JWT Token
-                is ExpiredJwtException -> {}    // Expired JWT Token
-                is UnsupportedJwtException -> {}    // Unsupported JWT Token
-                is IllegalArgumentException -> {}   // JWT claims string is empty
-                else -> {}  // else
+                is SecurityException -> {} // Invalid JWT Token
+                is MalformedJwtException -> {} // Invalid JWT Token
+                is ExpiredJwtException -> {} // Expired JWT Token
+                is UnsupportedJwtException -> {} // Unsupported JWT Token
+                is IllegalArgumentException -> {} // JWT claims string is empty
+                else -> {} // else
             }
             println(e.message)
         }

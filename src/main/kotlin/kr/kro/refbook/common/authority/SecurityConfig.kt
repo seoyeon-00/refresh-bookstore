@@ -5,16 +5,14 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
-import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -25,13 +23,13 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers("/api/user/signup", "/api/user/login", "/api/user/admin/role/{id}").anonymous()
                     // .requestMatchers("/api/user/**").hasRole("MEMBER")
-                    .requestMatchers("/api/user","/api/user/info").hasRole("MEMBER")
-                    .requestMatchers("/api/user","/api/user/info","/api/user/admin/{id}").hasRole("ADMIN")
+                    .requestMatchers("/api/user", "/api/user/info").hasRole("MEMBER")
+                    .requestMatchers("/api/user", "/api/user/info", "/api/user/admin/{id}").hasRole("ADMIN")
                     .anyRequest().permitAll()
             }
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter::class.java
+                UsernamePasswordAuthenticationFilter::class.java,
             )
 
         return http.build()

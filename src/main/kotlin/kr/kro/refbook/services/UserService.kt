@@ -1,38 +1,36 @@
 package kr.kro.refbook.services
 
-import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.dto.LoginDto
-import kr.kro.refbook.dto.MemberRoleDto
-import kr.kro.refbook.dto.UserDtoResponse
-import kr.kro.refbook.entities.User
-import kr.kro.refbook.entities.MemberRole
-import kr.kro.refbook.repositories.UserRepository
-import kr.kro.refbook.repositories.MemberRoleRepository
-import org.springframework.stereotype.Service
-import kr.kro.refbook.common.status.ROLE
-import kr.kro.refbook.common.exception.InvalidInputException
 import kr.kro.refbook.common.authority.JwtTokenProvider
 import kr.kro.refbook.common.authority.TokenInfo
+import kr.kro.refbook.common.exception.InvalidInputException
+import kr.kro.refbook.common.status.ROLE
+import kr.kro.refbook.dto.LoginDto
+import kr.kro.refbook.dto.MemberRoleDto
+import kr.kro.refbook.dto.UserDto
+import kr.kro.refbook.dto.UserDtoResponse
+import kr.kro.refbook.entities.MemberRole
+import kr.kro.refbook.entities.User
+import kr.kro.refbook.repositories.MemberRoleRepository
+import kr.kro.refbook.repositories.UserRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.core.userdetails.UserDetailsService
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    private val userRepository: UserRepository, 
+    private val userRepository: UserRepository,
     private val memberRoleRepository: MemberRoleRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
 ) {
 
-    //회원가입
+    // 회원가입
     fun signUp(userDto: UserDto): UserDto {
-
-        //Email 중복 검사
+        // Email 중복 검사
         val existingUser = userRepository.findByEmail(userDto.email)
         if (existingUser != null) {
-            throw InvalidInputException("email","이미 등록된 이메일입니다.")
+            throw InvalidInputException("email", "이미 등록된 이메일입니다.")
         }
 
         val newUser = userRepository.create(userDto)
@@ -48,7 +46,7 @@ class UserService(
     }
 
     fun searchUser(id: Int): UserDtoResponse {
-        val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "회원번호(${id})가 존재하지 않는 유저입니다.")
+        val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "회원번호($id)가 존재하지 않는 유저입니다.")
         return user.toDtoResponse()
     }
 
@@ -70,7 +68,7 @@ class UserService(
     fun deleteUser(id: Int): Boolean {
         val userToDelete = userRepository.findById(id)
             ?: throw IllegalArgumentException("No product with id $id found.")
-        
+
         return userRepository.delete(userToDelete.id.value)
     }
 
