@@ -30,7 +30,6 @@ data class UserDto(
     @field:NotBlank
     val address: String,
 
-    @field:NotBlank
     val detailAddress: String,
 
     @field:NotBlank
