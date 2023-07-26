@@ -21,6 +21,13 @@ class ProductController(private val productService: ProductService) {
         } ?: ResponseEntity.notFound().build()
     }
 
+    @GetMapping("/{isbn}")
+    fun getProductByISBN(@PathVariable isbn: String): ResponseEntity<ProductDto> {
+        return productService.getProductByISBN(isbn)?.let {
+            ResponseEntity.ok(it)
+        } ?: ResponseEntity.notFound().build()
+    }
+
     @PostMapping
     fun createProduct(@RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
         return ResponseEntity.ok(productService.createProduct(productDto))

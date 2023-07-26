@@ -25,6 +25,10 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         Product.findById(id)
     }
 
+    fun findByISBN(isbn: String): Product? = transaction {
+        Product.find { Products.isbn eq isbn }.singleOrNull()
+    }
+
     fun create(
         categoryId: Int,
         title: String,
