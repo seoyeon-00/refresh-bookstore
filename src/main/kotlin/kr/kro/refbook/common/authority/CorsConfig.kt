@@ -13,9 +13,9 @@ class CorsConfig {
         val config = CorsConfiguration()
 
         config.allowCredentials = true
-        config.allowedOrigins = listOf("*")
+        config.allowedOrigins = listOf("http://localhost:8080", "http://localhost:3000", "http://localhost:8081")
         config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-        config.allowedHeaders = listOf("*")
+        config.allowedHeaders = listOf("Origin", "X-Requested-With", "Content-Type", "Authorization", "Oauth-Token")
         config.exposedHeaders = listOf("*")
 
         val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
