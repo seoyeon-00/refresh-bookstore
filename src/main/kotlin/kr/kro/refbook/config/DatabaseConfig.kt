@@ -26,5 +26,6 @@ object DatabaseConfig {
             user = dbUser,
             password = dbPassword,
         )
+        
     }
 }
