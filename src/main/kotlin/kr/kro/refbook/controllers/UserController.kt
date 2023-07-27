@@ -5,6 +5,7 @@ import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.common.dto.CustomUser
 import kr.kro.refbook.dto.LoginDto
+import kr.kro.refbook.dto.PasswordAuthenticationDto
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.dto.UserDtoResponse
@@ -34,8 +35,6 @@ class UserController(
 
         if (user != null) {
             val hashedPassword = user.password
-            println("hashedPassword: $hashedPassword")
-            println("password: ${loginDto.password}")
 
             if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
                 val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
@@ -44,6 +43,20 @@ class UserController(
             }
         }
         throw BadCredentialsException("Invalid email or password")
+    }
+
+    // 비밀번호 일치 여부 확인
+    @PostMapping("/check")
+    fun checkPassword(@RequestBody @Valid passwordAuthenticationDto: PasswordAuthenticationDto): BaseResponse<Unit> {
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val response = userService.searchUser(userId)
+        val hashedPassword = response.password
+
+        if (bcryptPasswordEncoder.matches(passwordAuthenticationDto.password, hashedPassword)) {
+            return BaseResponse(message = "비밀번호 인증이 완료되었습니다.")
+        }
+
+        throw BadCredentialsException("비밀번호 인증을 실패하였습니다.")
     }
 
     // @GetMapping("/{id}")

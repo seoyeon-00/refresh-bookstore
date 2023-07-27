@@ -52,9 +52,16 @@ data class UserDtoResponse(
     val id: Int,
     val name: String,
     val email: String,
+    val password : String,
     val postalCode: String,
     val address: String,
     val detailAddress: String,
     val phone: String,
     val isAdmin: Boolean,
 )
+
+data class PasswordAuthenticationDto(
+    @field:NotBlank
+    val password: String,
+)
+

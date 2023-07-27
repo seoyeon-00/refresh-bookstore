@@ -47,6 +47,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
             id = id.value,
             name = name,
             email = email,
+            password = password,
             postalCode = postalCode,
             address = address,
             detailAddress = detailAddress,
