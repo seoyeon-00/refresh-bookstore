@@ -28,6 +28,12 @@ class ProductController(private val productService: ProductService) {
         } ?: ResponseEntity.notFound().build()
     }
 
+    // 검색 기능 :: keyword로 책 조회하기
+    @GetMapping("/search")
+    fun getProductbyKeyword(@RequestParam keyword: String): ResponseEntity<List<ProductDto>> {
+       return ResponseEntity.ok(productService.getProductbyKeyword(keyword))
+    }
+
     @PostMapping
     fun createProduct(@RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
         return ResponseEntity.ok(productService.createProduct(productDto))
