@@ -21,8 +21,7 @@ class OrderListService(private val orderListRepository: OrderListRepository) {
 
     fun createOrderList(orderListDto: OrderListDto): OrderListDto = transaction {
         orderListRepository.create(
-            orderListDto.orderId,
-            orderListDto.productId,
+            orderListDto.product,
             orderListDto.amount,
         ).let { toDto(it) }
     }
@@ -38,8 +37,7 @@ class OrderListService(private val orderListRepository: OrderListRepository) {
     private fun toDto(orderList: OrderList): OrderListDto =
         OrderListDto(
             id = orderList.id.value,
-            orderId = orderList.order.id.value,
-            productId = orderList.product.id.value,
+            product = orderList.product.id.value,
             amount = orderList.amount,
         )
 }

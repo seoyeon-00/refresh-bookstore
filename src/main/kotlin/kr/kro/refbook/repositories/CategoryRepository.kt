@@ -23,14 +23,12 @@ class CategoryRepository {
         Category.findById(id)
     }
 
-    // categoryId 매개변수를 제거하고 name만 사용합니다.
     fun create(name: String): Category = transaction {
         Category.new {
             this.name = name
         }
     }
 
-    // categoryId 매개변수를 제거하고 name만 사용합니다.
     fun update(id: Int, name: String): Category? = transaction {
         Category.findById(id)?.apply {
             this.name = name

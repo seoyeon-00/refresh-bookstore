@@ -23,6 +23,9 @@ class OrderController(private val orderService: OrderService) {
 
     @PostMapping
     fun createOrder(@RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
+        if (orderDto.orderLists.isEmpty()) {
+            throw IllegalArgumentException("There must be at least one order list.")
+        }
         return ResponseEntity.ok(orderService.createOrder(orderDto))
     }
 

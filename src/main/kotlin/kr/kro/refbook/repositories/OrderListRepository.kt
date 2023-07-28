@@ -1,5 +1,6 @@
 package kr.kro.refbook.repositories
 
+import kr.kro.refbook.dto.OrderListDto
 import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.entities.models.OrderList
 import kr.kro.refbook.entities.models.Product
@@ -25,16 +26,10 @@ class OrderListRepository {
         OrderList.findById(id)
     }
 
-    fun create(orderId: Int, productId: Int, amount: Int): OrderList = transaction {
-        val order = Order.findById(orderId)
-        val product = Product.findById(productId)
-
-        if (order == null || product == null) {
-            throw IllegalArgumentException("Order or Product not found.")
-        }
+    fun create(productId: Int, amount: Int): OrderList = transaction {
+        val product = Product.findById(productId) ?: throw IllegalArgumentException("Product not found.")
 
         OrderList.new {
-            this.order = order
             this.product = product
             this.amount = amount
         }

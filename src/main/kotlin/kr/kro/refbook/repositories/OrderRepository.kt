@@ -27,11 +27,7 @@ class OrderRepository {
     }
 
     fun create(email: String, shippingStatus: ShippingStatus, totalPrice: Int): Order = transaction {
-        val user = User.find { Users.email eq email }.singleOrNull()
-
-        if (user == null) {
-            throw IllegalArgumentException("User not found.")
-        }
+        val user = User.find { Users.email eq email }.singleOrNull() ?: throw IllegalArgumentException("User not found.")
 
         Order.new {
             this.user = user

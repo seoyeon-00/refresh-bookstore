@@ -12,7 +12,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
 
     fun getCategoryById(id: Int): CategoryDto? = categoryRepository.findById(id)?.let { toDto(it) }
 
-    fun createCategory(categoryDto: CategoryDto): CategoryDto = categoryRepository.create(categoryDto.name).let { toDto(it) }
+    fun createCategory(categoryDto: CategoryDto): CategoryDto = toDto(categoryRepository.create(categoryDto.name))
 
     fun updateCategory(id: Int, categoryDto: CategoryDto): CategoryDto? = categoryRepository.update(id, categoryDto.name)?.let { toDto(it) }
 
