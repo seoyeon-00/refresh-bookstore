@@ -24,6 +24,10 @@ class ProductService(private val productRepository: ProductRepository) {
         productRepository.findByISBN(isbn)?.let { toDto(it) }
     }
 
+    fun getProductbyKeyword(keyword: String): List<ProductDto> = transaction {
+        productRepository.findByKeyword(keyword).map { toDto(it) }
+    }
+
     fun createProduct(productDto: ProductDto): ProductDto = transaction {
         val category = Category.findById(productDto.categoryId)
             ?: throw IllegalArgumentException("No category with id ${productDto.categoryId} found.")
