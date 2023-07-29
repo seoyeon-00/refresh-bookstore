@@ -15,7 +15,7 @@ object Products : IntIdTable() {
     val author: Column<String> = varchar("author", 50)
     val publisher: Column<String> = varchar("publisher", 100)
     val publicationDate: Column<LocalDate> = date("publication_date")
-    val isbn: Column<String> = varchar("isbn", 100)
+    val isbn: Column<String> = varchar("isbn", 100).uniqueIndex()
     val description: Column<String> = text("description")
     val price: Column<BigDecimal> = decimal("price", 10, 2)
     val imagePath: Column<String> = varchar("image_path", 100)

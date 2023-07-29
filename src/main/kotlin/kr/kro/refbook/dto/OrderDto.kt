@@ -18,5 +18,5 @@ data class OrderDto(
     val orderId: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
-    val orderLists: List<OrderListDto>
+    val orderItems: List<OrderItemDto>
 )

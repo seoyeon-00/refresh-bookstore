@@ -1,8 +1,9 @@
 package kr.kro.refbook.entities.models
 
 import kr.kro.refbook.entities.User
+import kr.kro.refbook.entities.models.OrderItem
+import kr.kro.refbook.entities.tables.OrderItems
 import kr.kro.refbook.entities.tables.Orders
-import kr.kro.refbook.entities.tables.OrderLists
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -24,5 +25,6 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     var createdAt by Orders.createdAt
     var updatedAt by Orders.updatedAt
 
-    val orderLists by OrderList referrersOn Orders.id
+    val orderItems: List<OrderItem> get() = OrderItem.find { OrderItems.order eq id }.toList()
 }
+

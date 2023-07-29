@@ -4,7 +4,8 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
 
-object OrderLists : IntIdTable() {
+object OrderItems : IntIdTable() {
     val product: Column<EntityID<Int>> = reference("product_id", Products)
-    val amount: Column<Int> = integer("amount")
+    val amount: Column<Int> = integer("quantity")
+    val order: Column<EntityID<Int>?> = reference("order_id", Orders).nullable()
 }
