@@ -1,7 +1,6 @@
 package kr.kro.refbook.entities.models
 
 import kr.kro.refbook.entities.User
-import kr.kro.refbook.entities.models.OrderItem
 import kr.kro.refbook.entities.tables.OrderItems
 import kr.kro.refbook.entities.tables.Orders
 import org.jetbrains.exposed.dao.IntEntity
@@ -27,4 +26,3 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
 
     val orderItems: List<OrderItem> get() = OrderItem.find { OrderItems.order eq id }.toList()
 }
-

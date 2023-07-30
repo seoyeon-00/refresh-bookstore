@@ -31,7 +31,7 @@ class ProductController(private val productService: ProductService) {
     // 검색 기능 :: keyword로 책 조회하기
     @GetMapping("/search")
     fun getProductbyKeyword(@RequestParam keyword: String): ResponseEntity<List<ProductDto>> {
-       return ResponseEntity.ok(productService.getProductbyKeyword(keyword))
+        return ResponseEntity.ok(productService.getProductbyKeyword(keyword))
     }
 
     @PostMapping

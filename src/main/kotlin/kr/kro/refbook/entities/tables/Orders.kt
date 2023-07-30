@@ -1,8 +1,6 @@
 package kr.kro.refbook.entities.tables
 
-import kr.kro.refbook.entities.MemberRole.Companion.referrersOn
 import kr.kro.refbook.entities.Users
-import kr.kro.refbook.entities.models.OrderItem
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column

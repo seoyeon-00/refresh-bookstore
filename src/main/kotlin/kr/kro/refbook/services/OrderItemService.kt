@@ -19,7 +19,6 @@ class OrderItemService(private val orderItemRepository: OrderItemRepository) {
         orderItemRepository.findById(id)?.let { toDto(it) }
     }
 
-
     fun updateOrderItem(id: Int, orderListDto: OrderItemDto): OrderItemDto? = transaction {
         orderItemRepository.update(id, orderListDto.amount)?.let { toDto(it) }
     }
@@ -33,6 +32,6 @@ class OrderItemService(private val orderItemRepository: OrderItemRepository) {
             id = orderItem.id.value,
             isbn = orderItem.product.isbn,
             amount = orderItem.amount,
-            orderId = orderItem.order?.id?.value
+            orderId = orderItem.order?.id?.value,
         )
 }

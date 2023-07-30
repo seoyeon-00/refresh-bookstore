@@ -14,11 +14,11 @@ object DatabaseConfig {
         //  val dbUser: String = dotenv["DB_USER"] ?: ""
         //  val dbPassword: String = dotenv["DB_PASSWORD"] ?: ""
 
-       val dbHost: String = System.getenv("DB_HOST") ?: ""
-       val dbPort: String = System.getenv("DB_PORT") ?: ""
-       val dbName: String = System.getenv("DB_NAME") ?: ""
-       val dbUser: String = System.getenv("DB_USER") ?: ""
-       val dbPassword: String = System.getenv("DB_PASSWORD") ?: ""
+        val dbHost: String = System.getenv("DB_HOST") ?: ""
+        val dbPort: String = System.getenv("DB_PORT") ?: ""
+        val dbName: String = System.getenv("DB_NAME") ?: ""
+        val dbUser: String = System.getenv("DB_USER") ?: ""
+        val dbPassword: String = System.getenv("DB_PASSWORD") ?: ""
 
         Database.connect(
             url = "jdbc:postgresql://$dbHost:$dbPort/$dbName",
@@ -26,6 +26,5 @@ object DatabaseConfig {
             user = dbUser,
             password = dbPassword,
         )
-        
     }
 }

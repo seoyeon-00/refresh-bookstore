@@ -11,6 +11,6 @@ class WebConfig : WebMvcConfigurer {
             .allowedOrigins("http://localhost:8080", "http://localhost:3000")
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
             .allowCredentials(true)
-            .maxAge(3600);
+            .maxAge(3600)
     }
 }
