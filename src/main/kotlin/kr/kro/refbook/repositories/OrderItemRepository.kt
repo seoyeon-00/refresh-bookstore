@@ -6,6 +6,7 @@ import kr.kro.refbook.entities.tables.OrderItems
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 
 @Repository
 class OrderItemRepository(private val productRepository: ProductRepository) {

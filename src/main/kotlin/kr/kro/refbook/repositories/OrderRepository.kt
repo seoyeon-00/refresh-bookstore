@@ -7,9 +7,10 @@ import kr.kro.refbook.entities.tables.ShippingStatus
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
+import java.math.BigDecimal
 
 @Repository
-class OrderRepository(private val userRepository: UserRepository, private val orderItemRepository: OrderItemRepository) {
+class OrderRepository(private val userRepository: UserRepository, private val orderItemRepository: OrderItemRepository, private val productRepository: ProductRepository) {
 
     init {
         transaction {
@@ -28,18 +29,26 @@ class OrderRepository(private val userRepository: UserRepository, private val or
     fun create(
         userEmail: String,
         shippingStatus: ShippingStatus,
-        deliveryFee: Int,
+        deliveryFee: BigDecimal,
         userName: String,
         postalCode: String,
         address: String,
         detailAddress: String,
         userPhone: String,
         orderRequest: String,
-        totalPrice: Int,
         orderItemsDto: List<OrderItemDto>
     ): Order = transaction {
         val user = userRepository.findByEmail(userEmail)
             ?: throw IllegalArgumentException("Invalid user email")
+
+
+        var totalPrice = BigDecimal.ZERO
+        orderItemsDto.forEach { orderItemDto ->
+            val product = productRepository.findByISBN(orderItemDto.isbn)
+                ?: throw IllegalArgumentException("Product not found.")
+            totalPrice += product.price * BigDecimal(orderItemDto.amount) + deliveryFee
+        }
+
 
         Order.new {
             this.user = user
@@ -63,14 +72,13 @@ class OrderRepository(private val userRepository: UserRepository, private val or
     fun update(
         id: Int,
         shippingStatus: ShippingStatus,
-        deliveryFee: Int,
+        deliveryFee: BigDecimal,
         userName: String,
         postalCode: String,
         address: String,
         detailAddress: String,
         userPhone: String,
         orderRequest: String,
-        totalPrice: Int,
         orderItemsDto: List<OrderItemDto>
     ): Order? = transaction {
         Order.findById(id)?.apply {
@@ -82,15 +90,20 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             this.detailAddress = detailAddress
             this.userPhone = userPhone
             this.orderRequest = orderRequest
-            this.totalPrice = totalPrice
-        }?.also { order ->
-            // clear existing order items
-            order.orderItems.forEach { it.delete() }
 
-            // create new order items
+            // clear existing order items
+            orderItems.forEach { it.delete() }
+
+            // Calculate total price and create new order items
+            var totalPrice = BigDecimal.ZERO
             orderItemsDto.forEach { orderItemDto ->
-                orderItemRepository.create(order.id.value, orderItemDto.isbn, orderItemDto.amount)
+                val product = productRepository.findByISBN(orderItemDto.isbn)
+                    ?: throw IllegalArgumentException("Product not found.")
+                totalPrice += product.price * BigDecimal(orderItemDto.amount) + deliveryFee
+                orderItemRepository.create(this.id.value, orderItemDto.isbn, orderItemDto.amount)
             }
+
+            this.totalPrice = totalPrice
         }
     }
 

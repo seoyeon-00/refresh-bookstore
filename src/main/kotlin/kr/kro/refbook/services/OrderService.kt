@@ -35,7 +35,6 @@ class OrderService(
             orderDto.detailAddress,
             orderDto.userPhone,
             orderDto.orderRequest,
-            orderDto.totalPrice,
             orderDto.orderItems
         ).let { toDto(it) }
     }
@@ -51,7 +50,6 @@ class OrderService(
             orderDto.detailAddress,
             orderDto.userPhone,
             orderDto.orderRequest,
-            orderDto.totalPrice,
             orderDto.orderItems
         )?.let { toDto(it) }
     }
@@ -73,8 +71,8 @@ class OrderService(
             detailAddress = order.detailAddress,
             userPhone = order.userPhone,
             orderRequest = order.orderRequest,
-            totalPrice = order.totalPrice,
             orderNumber = order.orderNumber,
+            totalPrice = order.totalPrice,
             createdAt = order.createdAt,
             updatedAt = order.updatedAt,
             orderItems = order.orderItems.map { orderItem -> OrderItemDto(

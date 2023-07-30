@@ -17,7 +17,7 @@ object Products : IntIdTable() {
     val publicationDate: Column<LocalDate> = date("publication_date")
     val isbn: Column<String> = varchar("isbn", 100).uniqueIndex()
     val description: Column<String> = text("description")
-    val price: Column<BigDecimal> = decimal("price", 10, 2)
+    val price: Column<BigDecimal> = decimal("price", precision = 10, scale = 2)
     val imagePath: Column<String> = varchar("image_path", 100)
     val isBestSeller: Column<Boolean> = bool("is_best_seller").default(false)
     val createdAt: Column<LocalDateTime> = datetime("created_at").default(LocalDateTime.now())
