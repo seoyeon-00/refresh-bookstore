@@ -57,6 +57,7 @@ dependencies {
 
     // validation dependencies
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 }
 
 tasks.withType<KotlinCompile> {

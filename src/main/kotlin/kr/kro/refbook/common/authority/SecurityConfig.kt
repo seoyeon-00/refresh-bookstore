@@ -8,8 +8,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.context.annotation.Import
-import org.springframework.web.cors.reactive.CorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +26,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/user/signup", "/api/user/login", "/api/user/admin/role/{id}").anonymous()
-                    .requestMatchers("/api/user", "/api/user/info").hasAnyRole("MEMBER","ADMIN")
+                    .requestMatchers("/api/user", "/api/user/info").hasAnyRole("MEMBER", "ADMIN")
                     .requestMatchers("/api/user/admin/{id}", "/api/user/admin").hasRole("ADMIN")
                     .anyRequest().permitAll()
             }

@@ -2,10 +2,10 @@ package kr.kro.refbook.repositories
 
 import kr.kro.refbook.entities.models.Product
 import kr.kro.refbook.entities.tables.Products
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -35,7 +35,7 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         Product.find {
             Op.build {
                 (Products.title like "%$keyword%") or
-                (Products.author like "%$keyword%")
+                    (Products.author like "%$keyword%")
             }
         }.toList()
     }

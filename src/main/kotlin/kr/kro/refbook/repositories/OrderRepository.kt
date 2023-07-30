@@ -1,8 +1,8 @@
 package kr.kro.refbook.repositories
 
+import kr.kro.refbook.dto.OrderItemDto
 import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.entities.tables.Orders
-import kr.kro.refbook.dto.OrderItemDto
 import kr.kro.refbook.entities.tables.ShippingStatus
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -36,11 +36,10 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         detailAddress: String,
         userPhone: String,
         orderRequest: String,
-        orderItemsDto: List<OrderItemDto>
+        orderItemsDto: List<OrderItemDto>,
     ): Order = transaction {
         val user = userRepository.findByEmail(userEmail)
             ?: throw IllegalArgumentException("Invalid user email")
-
 
         var totalPrice = BigDecimal.ZERO
         orderItemsDto.forEach { orderItemDto ->
@@ -48,7 +47,6 @@ class OrderRepository(private val userRepository: UserRepository, private val or
                 ?: throw IllegalArgumentException("Product not found.")
             totalPrice += product.price * BigDecimal(orderItemDto.amount) + deliveryFee
         }
-
 
         Order.new {
             this.user = user
@@ -68,7 +66,6 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         }
     }
 
-
     fun update(
         id: Int,
         shippingStatus: ShippingStatus,
@@ -79,7 +76,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         detailAddress: String,
         userPhone: String,
         orderRequest: String,
-        orderItemsDto: List<OrderItemDto>
+        orderItemsDto: List<OrderItemDto>,
     ): Order? = transaction {
         Order.findById(id)?.apply {
             this.shippingStatus = shippingStatus

@@ -1,11 +1,11 @@
 package kr.kro.refbook.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import kr.kro.refbook.entities.tables.ShippingStatus
-import java.time.LocalDateTime
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import kr.kro.refbook.entities.tables.ShippingStatus
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 data class OrderDto(
     val id: Int,
@@ -15,7 +15,6 @@ data class OrderDto(
     @JsonProperty("email")
     val email: String,
 
-
     val shippingStatus: ShippingStatus,
     val deliveryFee: BigDecimal,
     val userName: String,
@@ -24,9 +23,9 @@ data class OrderDto(
     val detailAddress: String,
     val userPhone: String,
     val orderRequest: String,
-    val orderNumber: String,
+    val orderNumber: String?,
     val totalPrice: BigDecimal,
-    val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime,
-    val orderItems: List<OrderItemDto>
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?,
+    val orderItems: List<OrderItemDto>,
 )

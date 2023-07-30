@@ -4,14 +4,12 @@ import kr.kro.refbook.dto.OrderDto
 import kr.kro.refbook.dto.OrderItemDto
 import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.repositories.OrderRepository
-import kr.kro.refbook.repositories.OrderItemRepository
-import kr.kro.refbook.repositories.UserRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
 class OrderService(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
 ) {
 
     fun getAllOrders(): List<OrderDto> = transaction {
@@ -35,7 +33,7 @@ class OrderService(
             orderDto.detailAddress,
             orderDto.userPhone,
             orderDto.orderRequest,
-            orderDto.orderItems
+            orderDto.orderItems,
         ).let { toDto(it) }
     }
 
@@ -50,10 +48,9 @@ class OrderService(
             orderDto.detailAddress,
             orderDto.userPhone,
             orderDto.orderRequest,
-            orderDto.orderItems
+            orderDto.orderItems,
         )?.let { toDto(it) }
     }
-
 
     fun deleteOrder(id: Int): Boolean = transaction {
         orderRepository.delete(id)
@@ -75,12 +72,13 @@ class OrderService(
             totalPrice = order.totalPrice,
             createdAt = order.createdAt,
             updatedAt = order.updatedAt,
-            orderItems = order.orderItems.map { orderItem -> OrderItemDto(
-                id = orderItem.id.value,
-                isbn = orderItem.product.isbn,
-                amount = orderItem.amount,
-                orderId = orderItem.order?.id?.value
-               )
-            }
+            orderItems = order.orderItems.map { orderItem ->
+                OrderItemDto(
+                    id = orderItem.id.value,
+                    isbn = orderItem.product.isbn,
+                    amount = orderItem.amount,
+                    orderId = orderItem.order?.id?.value,
+                )
+            },
         )
 }
