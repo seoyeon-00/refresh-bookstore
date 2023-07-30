@@ -28,7 +28,7 @@ object Orders : IntIdTable() {
     val userPhone: Column<String> = varchar("user_phone", 15)
     val orderRequest: Column<String> = text("order_request")
     val totalPrice: Column<Int> = integer("total_price")
-    val orderId: Column<String> = varchar("order_id", 36).default(UUID.randomUUID().toString())
+    val orderNumber: Column<String> = varchar("order_id", 36).default(UUID.randomUUID().toString())
     val createdAt: Column<LocalDateTime> = datetime("created_at").default(LocalDateTime.now())
     val updatedAt: Column<LocalDateTime> = datetime("updated_at").default(LocalDateTime.now())
 }

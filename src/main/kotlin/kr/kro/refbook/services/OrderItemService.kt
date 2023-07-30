@@ -19,12 +19,6 @@ class OrderItemService(private val orderItemRepository: OrderItemRepository) {
         orderItemRepository.findById(id)?.let { toDto(it) }
     }
 
-    fun createOrderItem(orderItemDto: OrderItemDto): OrderItemDto = transaction {
-        orderItemRepository.create(
-            orderItemDto.isbn,
-            orderItemDto.amount,
-        ).let { toDto(it) }
-    }
 
     fun updateOrderItem(id: Int, orderListDto: OrderItemDto): OrderItemDto? = transaction {
         orderItemRepository.update(id, orderListDto.amount)?.let { toDto(it) }

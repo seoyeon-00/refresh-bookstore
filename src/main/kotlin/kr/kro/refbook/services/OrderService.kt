@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class OrderService(
-    private val orderRepository: OrderRepository,
-    private val orderItemRepository: OrderItemRepository
+    private val orderRepository: OrderRepository
 ) {
 
     fun getAllOrders(): List<OrderDto> = transaction {
@@ -25,39 +24,36 @@ class OrderService(
         toDto(orderRepository.findById(id))
     }
 
-    fun createOrder(orderDto: OrderDto): OrderDto? {
-        return try {
-            transaction {
-
-                val createdOrder = orderRepository.create(
-                    orderDto.email,
-                    orderDto.shippingStatus,
-                    orderDto.totalPrice,
-                )
-
-
-                orderDto.orderItems.forEach {
-                    orderItemDto -> orderItemRepository.create(orderItemDto.isbn, orderItemDto.amount)
-                }
-
-                val dto = toDto(createdOrder) // 'return' keyword is not necessary here.
-                dto
-            }
-        } catch (e: Exception) {
-            // 오류를 로깅하고 null을 반환하거나, 필요하다면 사용자 정의 예외를 발생시킵니다.
-            println("An error occurred: ${e.message}")
-            null
-        }
+    fun createOrder(orderDto: OrderDto): OrderDto = transaction {
+        orderRepository.create(
+            orderDto.email,
+            orderDto.shippingStatus,
+            orderDto.deliveryFee,
+            orderDto.userName,
+            orderDto.postalCode,
+            orderDto.address,
+            orderDto.detailAddress,
+            orderDto.userPhone,
+            orderDto.orderRequest,
+            orderDto.totalPrice,
+            orderDto.orderItems
+        ).let { toDto(it) }
     }
 
     fun updateOrder(id: Int, orderDto: OrderDto): OrderDto? = transaction {
-        orderRepository.update(id, orderDto.shippingStatus)?.let { updatedOrder ->
-            // update order items if provided in the DTO
-            orderDto.orderItems.forEach { orderItemDto ->
-                orderItemRepository.update(orderItemDto.id, orderItemDto.amount)
-            }
-            toDto(updatedOrder)
-        }
+        orderRepository.update(
+            id,
+            orderDto.shippingStatus,
+            orderDto.deliveryFee,
+            orderDto.userName,
+            orderDto.postalCode,
+            orderDto.address,
+            orderDto.detailAddress,
+            orderDto.userPhone,
+            orderDto.orderRequest,
+            orderDto.totalPrice,
+            orderDto.orderItems
+        )?.let { toDto(it) }
     }
 
 
@@ -78,7 +74,7 @@ class OrderService(
             userPhone = order.userPhone,
             orderRequest = order.orderRequest,
             totalPrice = order.totalPrice,
-            orderId = order.orderId,
+            orderNumber = order.orderNumber,
             createdAt = order.createdAt,
             updatedAt = order.updatedAt,
             orderItems = order.orderItems.map { orderItem -> OrderItemDto(

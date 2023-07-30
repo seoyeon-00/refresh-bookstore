@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/order-lists")
+@RequestMapping("api/order-items")
 class OrderItemController(private val orderItemService: OrderItemService) {
 
     @GetMapping
@@ -19,11 +19,6 @@ class OrderItemController(private val orderItemService: OrderItemService) {
         return orderItemService.getOrderItemById(id)?.let {
             ResponseEntity.ok(it)
         } ?: ResponseEntity.notFound().build()
-    }
-
-    @PostMapping
-    fun createOrderItem(@RequestBody orderItemDto: OrderItemDto): ResponseEntity<OrderItemDto> {
-        return ResponseEntity.ok(orderItemService.createOrderItem(orderItemDto))
     }
 
     @PutMapping("/{id}")

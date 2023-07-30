@@ -15,7 +15,7 @@ data class OrderDto(
     val userPhone: String,
     val orderRequest: String,
     val totalPrice: Int,
-    val orderId: String,
+    val orderNumber: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val orderItems: List<OrderItemDto>

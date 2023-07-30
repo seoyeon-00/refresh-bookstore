@@ -1,6 +1,7 @@
 package kr.kro.refbook.repositories
 
 import kr.kro.refbook.entities.models.OrderItem
+import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.entities.tables.OrderItems
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,12 +24,14 @@ class OrderItemRepository(private val productRepository: ProductRepository) {
         OrderItem.findById(id)
     }
 
-    fun create(isbn: String, amount: Int): OrderItem = transaction {
+    fun create(orderId: Int, isbn: String, amount: Int): OrderItem = transaction {
         val product = productRepository.findByISBN(isbn) ?: throw IllegalArgumentException("Product not found.")
+        val order = Order.findById(orderId) ?: throw IllegalArgumentException("Order not found.")
 
         OrderItem.new {
             this.product = product
             this.amount = amount
+            this.order = order
         }
     }
 

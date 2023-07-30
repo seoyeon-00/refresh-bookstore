@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("api/products")
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
@@ -21,7 +21,7 @@ class ProductController(private val productService: ProductService) {
         } ?: ResponseEntity.notFound().build()
     }
 
-    @GetMapping("/{isbn}")
+    @GetMapping("/isbn/{isbn}")
     fun getProductByISBN(@PathVariable isbn: String): ResponseEntity<ProductDto> {
         return productService.getProductByISBN(isbn)?.let {
             ResponseEntity.ok(it)

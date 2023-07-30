@@ -21,7 +21,7 @@ class Order(id: EntityID<Int>) : IntEntity(id) {
     var userPhone by Orders.userPhone
     var orderRequest by Orders.orderRequest
     var totalPrice by Orders.totalPrice
-    var orderId by Orders.orderId
+    var orderNumber by Orders.orderNumber
     var createdAt by Orders.createdAt
     var updatedAt by Orders.updatedAt
 
