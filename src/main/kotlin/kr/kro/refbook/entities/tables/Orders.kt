@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.*
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils //git
 
 enum class ShippingStatus(val status: Int) {
     PREPARING(0),
@@ -28,7 +28,7 @@ object Orders : IntIdTable() {
     val userPhone: Column<String> = varchar("user_phone", 15)
     val orderRequest: Column<String> = text("order_request")
     val totalPrice: Column<BigDecimal> = decimal("total_price", precision = 10, scale = 2)
-    val orderNumber: Column<String> = varchar("order_id", 8).default(NanoIdUtils.randomNanoId())
+    val orderNumber: Column<String> = varchar("order_id", 8).default(NanoIdUtils.randomNanoId()) // git
     val createdAt: Column<LocalDateTime> = datetime("created_at").default(LocalDateTime.now())
     val updatedAt: Column<LocalDateTime> = datetime("updated_at").default(LocalDateTime.now())
 }
