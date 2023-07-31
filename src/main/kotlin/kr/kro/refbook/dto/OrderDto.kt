@@ -15,6 +15,7 @@ data class OrderDto(
     @JsonProperty("email")
     val email: String,
 
+
     val shippingStatus: ShippingStatus,
     val deliveryFee: BigDecimal,
     val userName: String,
