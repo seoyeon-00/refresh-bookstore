@@ -4,8 +4,6 @@ import kr.kro.refbook.config.DatabaseConfig
 import kr.kro.refbook.utils.EnvLoader
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-
 @SpringBootApplication
 class Application
 
