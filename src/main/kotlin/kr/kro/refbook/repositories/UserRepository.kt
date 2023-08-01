@@ -3,10 +3,10 @@ package kr.kro.refbook.repositories
 import kr.kro.refbook.common.status.ROLE
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.entities.MemberRole
-import kr.kro.refbook.entities.MemberRoles
-import kr.kro.refbook.entities.User
-import kr.kro.refbook.entities.Users
+import kr.kro.refbook.entities.models.MemberRole
+import kr.kro.refbook.entities.tables.MemberRoles
+import kr.kro.refbook.entities.models.User
+import kr.kro.refbook.entities.tables.Users
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.DependsOn

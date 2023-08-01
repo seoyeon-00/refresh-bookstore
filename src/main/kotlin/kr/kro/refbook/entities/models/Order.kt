@@ -1,6 +1,6 @@
 package kr.kro.refbook.entities.models
 
-import kr.kro.refbook.entities.User
+import kr.kro.refbook.entities.models.User
 import kr.kro.refbook.entities.tables.OrderItems
 import kr.kro.refbook.entities.tables.Orders
 import org.jetbrains.exposed.dao.IntEntity

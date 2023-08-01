@@ -1,6 +1,6 @@
 package kr.kro.refbook.entities.tables
 
-import kr.kro.refbook.entities.Users
+import kr.kro.refbook.entities.tables.Users
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column

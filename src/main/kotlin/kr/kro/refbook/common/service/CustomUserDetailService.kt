@@ -1,6 +1,6 @@
 package kr.kro.refbook.common.service
 
-import kr.kro.refbook.entities.User
+import kr.kro.refbook.entities.models.User
 import kr.kro.refbook.repositories.UserRepository
 import kr.kro.refbook.common.dto.CustomUser
 import org.springframework.security.core.authority.SimpleGrantedAuthority

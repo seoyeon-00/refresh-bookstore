@@ -8,8 +8,8 @@ import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.dto.UserDtoResponse
-import kr.kro.refbook.entities.MemberRole
-import kr.kro.refbook.entities.User
+import kr.kro.refbook.entities.models.MemberRole
+import kr.kro.refbook.entities.models.User
 import kr.kro.refbook.repositories.MemberRoleRepository
 import kr.kro.refbook.repositories.UserRepository
 import org.jetbrains.exposed.sql.transactions.transaction
