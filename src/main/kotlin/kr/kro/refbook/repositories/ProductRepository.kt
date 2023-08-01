@@ -6,11 +6,13 @@ import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.time.LocalDate
 
 @Repository
+@DependsOn("databaseConfig")
 class ProductRepository(private val categoryRepository: CategoryRepository) {
 
     init {

@@ -5,9 +5,11 @@ import kr.kro.refbook.entities.models.OrderItem
 import kr.kro.refbook.entities.tables.OrderItems
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
 
 @Repository
+@DependsOn("databaseConfig")
 class OrderItemRepository(private val productRepository: ProductRepository) {
 
     init {

@@ -1,19 +1,30 @@
 package kr.kro.refbook.config
 
-import io.github.cdimascio.dotenv.Dotenv
+import jakarta.annotation.PostConstruct
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import org.jetbrains.exposed.sql.Database
 
-object DatabaseConfig {
-    private val dotenv = Dotenv.load()
+@Component
+class DatabaseConfig {
 
+    @Value("\${db.host}")
+    private lateinit var dbHost: String
+
+    @Value("\${db.port}")
+    private lateinit var dbPort: String
+
+    @Value("\${db.name}")
+    private lateinit var dbName: String
+
+    @Value("\${db.user}")
+    private lateinit var dbUser: String
+
+    @Value("\${db.password}")
+    private lateinit var dbPassword: String
+
+    @PostConstruct
     fun init() {
-
-        val dbHost: String = dotenv["DB_HOST"] ?: ""
-        val dbPort: String = dotenv["DB_PORT"] ?: ""
-        val dbName: String = dotenv["DB_NAME"] ?: ""
-        val dbUser: String = dotenv["DB_USER"] ?: ""
-        val dbPassword: String = dotenv["DB_PASSWORD"] ?: ""
-
         Database.connect(
             url = "jdbc:postgresql://$dbHost:$dbPort/$dbName",
             driver = "org.postgresql.Driver",

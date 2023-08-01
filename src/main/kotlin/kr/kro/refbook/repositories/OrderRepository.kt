@@ -8,10 +8,12 @@ import kr.kro.refbook.entities.tables.Products
 import kr.kro.refbook.entities.tables.ShippingStatus
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 
 @Repository
+@DependsOn("databaseConfig")
 class OrderRepository(private val userRepository: UserRepository, private val orderItemRepository: OrderItemRepository, private val productRepository: ProductRepository) {
 
     init {

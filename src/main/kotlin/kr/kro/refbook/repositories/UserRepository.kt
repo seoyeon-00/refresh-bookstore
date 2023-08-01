@@ -9,11 +9,13 @@ import kr.kro.refbook.entities.User
 import kr.kro.refbook.entities.Users
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.context.annotation.DependsOn
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
 @Repository
+@DependsOn("databaseConfig")
 class UserRepository(
     private val bcryptPasswordEncoder: BCryptPasswordEncoder,
 ) {

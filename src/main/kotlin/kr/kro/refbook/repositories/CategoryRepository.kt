@@ -4,9 +4,11 @@ import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.entities.tables.Categories
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
 
 @Repository
+@DependsOn("databaseConfig")
 class CategoryRepository {
 
     init {
