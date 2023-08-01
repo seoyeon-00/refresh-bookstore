@@ -4,6 +4,7 @@ import kr.kro.refbook.common.authority.JwtTokenProvider
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.exception.InvalidInputException
 import kr.kro.refbook.common.status.ROLE
+import kr.kro.refbook.dto.CheckEmailRequestDto
 import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.dto.UserDto
@@ -30,7 +31,7 @@ class UserService(
         // Email 중복 검사
         val existingUser = userRepository.findByEmail(userDto.email)
         if (existingUser != null) {
-            throw InvalidInputException("email", "이미 등록된 이메일입니다.")
+            throw InvalidInputException("email", "Email already registered")
         }
 
         val newUser = userRepository.create(userDto)
@@ -46,8 +47,16 @@ class UserService(
     }
 
     fun searchUser(id: Int): UserDtoResponse {
-        val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "회원번호($id)가 존재하지 않는 유저입니다.")
+        val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "Not found User with Id($id)")
         return user.toDtoResponse()
+    }
+
+    fun checkEmail(checkEmailRequestDto: CheckEmailRequestDto): Boolean {
+        val existingUser = userRepository.findByEmail(checkEmailRequestDto.email)
+        if (existingUser != null) {
+            throw InvalidInputException("email", "Email already registered")
+        }
+        return true
     }
 
     fun searchUserAll(): List<UserDtoResponse> {

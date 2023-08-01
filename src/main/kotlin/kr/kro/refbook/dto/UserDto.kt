@@ -33,6 +33,7 @@ data class UserDto(
     val detailAddress: String,
 
     @field:NotBlank
+    @field:Pattern(regexp = "^01(?:0|1|[6-9])[-]?(?:\\d{3}|\\d{4})[-]?\\d{4}$")
     val phone: String,
 
     val isAdmin: Boolean?,
@@ -63,4 +64,10 @@ data class UserDtoResponse(
 data class PasswordAuthenticationDto(
     @field:NotBlank
     val password: String,
+)
+
+data class CheckEmailRequestDto(
+    @field:NotBlank
+    @field:Email
+    val email: String
 )

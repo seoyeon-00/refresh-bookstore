@@ -7,6 +7,7 @@ import kr.kro.refbook.common.dto.CustomUser
 import kr.kro.refbook.dto.LoginDto
 import kr.kro.refbook.dto.MemberRoleDto
 import kr.kro.refbook.dto.PasswordAuthenticationDto
+import kr.kro.refbook.dto.CheckEmailRequestDto
 import kr.kro.refbook.dto.UserDto
 import kr.kro.refbook.dto.UserDtoResponse
 import kr.kro.refbook.repositories.UserRepository
@@ -35,7 +36,6 @@ class UserController(
 
         if (user != null) {
             val hashedPassword = user.password
-
             if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
                 val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
                 val tokenInfo = userService.login(loginDtoWithHashedPassword)
@@ -55,15 +55,19 @@ class UserController(
         if (bcryptPasswordEncoder.matches(passwordAuthenticationDto.password, hashedPassword)) {
             return BaseResponse(message = "비밀번호 인증이 완료되었습니다.")
         }
-
         throw BadCredentialsException("비밀번호 인증을 실패하였습니다.")
     }
 
-    // @GetMapping("/{id}")
-    // fun searchMyInfo(@PathVariable id: Int): BaseResponse<UserDtoResponse> {
-    //     val response = userService.searchUser(id)
-    //     return BaseResponse(data = response)
-    // }
+    @PostMapping("/checkEmail")
+    fun checkEmail(@RequestBody @Valid checkEmailRequestDto: CheckEmailRequestDto): BaseResponse<Unit> {
+        val response = userService.checkEmail(checkEmailRequestDto)
+        val message = if (response) {
+            "Available email"
+        } else {
+            "User already exists"
+        }
+        return BaseResponse(message = message)
+    }
 
     @GetMapping("/info")
     fun searchMyInfo(): BaseResponse<UserDtoResponse> {

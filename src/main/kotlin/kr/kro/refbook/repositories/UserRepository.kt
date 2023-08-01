@@ -72,12 +72,10 @@ class UserRepository(
 
         user.apply {
             name = userDto.name
-            // email = userDto.email
             postalCode = userDto.postalCode
             address = userDto.address
             detailAddress = userDto.detailAddress
             phone = userDto.phone
-            // isAdmin = userDto.isAdmin ?: false
         }
         user
     }
