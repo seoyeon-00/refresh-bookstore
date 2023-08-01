@@ -22,6 +22,24 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         }
     }
 
+    private fun calculateTotalPrice(orderItemsDto: List<OrderItemDto>, deliveryFee: BigDecimal): Pair<BigDecimal, BigDecimal> {
+        var itemTotal = BigDecimal.ZERO
+        orderItemsDto.forEach { orderItemDto ->
+            val product = productRepository.findByISBN(orderItemDto.isbn)
+                ?: throw IllegalArgumentException("Product not found.")
+            itemTotal += product.price * BigDecimal(orderItemDto.amount)
+        }
+
+        val totalPrice = if (itemTotal >= BigDecimal(50000)) {
+            itemTotal
+        } else {
+            itemTotal + deliveryFee
+        }
+
+        return Pair(itemTotal, totalPrice)
+    }
+
+
     fun findAll(): List<Order> = transaction {
         Order.all().toList()
     }
@@ -49,20 +67,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         val user = userRepository.findByEmail(userEmail)
             ?: throw IllegalArgumentException("Invalid user email")
 
-        var totalPrice = BigDecimal.ZERO
-        var itemTotal = BigDecimal.ZERO
-        orderItemsDto.forEach { orderItemDto ->
-            val product = productRepository.findByISBN(orderItemDto.isbn)
-                ?: throw IllegalArgumentException("Product not found.")
-            itemTotal += product.price * BigDecimal(orderItemDto.amount)
-        }
-
-        totalPrice = if (itemTotal >= BigDecimal(50000)) {
-            itemTotal
-        } else {
-            itemTotal + deliveryFee
-        }
-
+        val (itemTotal, totalPrice) = calculateTotalPrice(orderItemsDto, deliveryFee)
 
         Order.new {
             this.user = user
@@ -107,15 +112,8 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             // clear existing order items
             orderItems.forEach { it.delete() }
 
-            // Calculate total price and create new order items
-            var totalPrice = BigDecimal.ZERO
-            orderItemsDto.forEach { orderItemDto ->
-                val product = productRepository.findByISBN(orderItemDto.isbn)
-                    ?: throw IllegalArgumentException("Product not found.")
-                totalPrice += product.price * BigDecimal(orderItemDto.amount) + deliveryFee
-                orderItemRepository.create(this.id.value, orderItemDto.isbn, orderItemDto.amount)
-            }
-
+            val (itemTotal, totalPrice) = calculateTotalPrice(orderItemsDto, deliveryFee)
+            this.deliveryFee = if (itemTotal >= BigDecimal(50000)) BigDecimal.ZERO else deliveryFee
             this.totalPrice = totalPrice
         }
     }
