@@ -1,6 +1,7 @@
 package kr.kro.refbook.controllers
 
 import kr.kro.refbook.dto.OrderDto
+import kr.kro.refbook.dto.ProductDto
 import kr.kro.refbook.services.OrderService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -21,6 +22,15 @@ class OrderController(private val orderService: OrderService) {
         } ?: ResponseEntity.notFound().build()
     }
 
+
+    @GetMapping("orderNumber/{orderNumber}")
+    fun getOrderByNumber(@PathVariable orderNumber: String): ResponseEntity<OrderDto> {
+        return orderService.getOrderByNumber(orderNumber)?.let {
+            ResponseEntity.ok(it)
+        } ?: ResponseEntity.notFound().build()
+    }
+
+
     @PostMapping
     fun createOrder(@RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
         if (orderDto.orderItems.isEmpty()) {
@@ -28,6 +38,7 @@ class OrderController(private val orderService: OrderService) {
         }
         return ResponseEntity.ok(orderService.createOrder(orderDto))
     }
+
 
     @PutMapping("/{id}")
     fun updateOrder(@PathVariable id: Int, @RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {

@@ -2,6 +2,7 @@ package kr.kro.refbook.services
 
 import kr.kro.refbook.dto.OrderDto
 import kr.kro.refbook.dto.OrderItemDto
+import kr.kro.refbook.dto.ProductDto
 import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.repositories.OrderRepository
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -20,6 +21,11 @@ class OrderService(
 
     fun getOrderById(id: Int): OrderDto? = transaction {
         toDto(orderRepository.findById(id))
+    }
+
+
+    fun getOrderByNumber(orderNumber: String): OrderDto? = transaction {
+        orderRepository.findByNumber(orderNumber)?.let { toDto(it) }
     }
 
     fun createOrder(orderDto: OrderDto): OrderDto = transaction {

@@ -2,7 +2,9 @@ package kr.kro.refbook.repositories
 
 import kr.kro.refbook.dto.OrderItemDto
 import kr.kro.refbook.entities.models.Order
+import kr.kro.refbook.entities.models.Product
 import kr.kro.refbook.entities.tables.Orders
+import kr.kro.refbook.entities.tables.Products
 import kr.kro.refbook.entities.tables.ShippingStatus
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -26,6 +28,10 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         Order.findById(id) ?: throw IllegalArgumentException("Order with ID: $id not found.")
     }
 
+    fun findByNumber(orderNumber: String): Order? = transaction {
+        Order.find { Orders.orderNumber eq orderNumber }.singleOrNull()
+    }
+
     fun create(
         userEmail: String,
         shippingStatus: ShippingStatus,
@@ -42,16 +48,24 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             ?: throw IllegalArgumentException("Invalid user email")
 
         var totalPrice = BigDecimal.ZERO
+        var itemTotal = BigDecimal.ZERO
         orderItemsDto.forEach { orderItemDto ->
             val product = productRepository.findByISBN(orderItemDto.isbn)
                 ?: throw IllegalArgumentException("Product not found.")
-            totalPrice += product.price * BigDecimal(orderItemDto.amount) + deliveryFee
+            itemTotal += product.price * BigDecimal(orderItemDto.amount)
         }
+
+        totalPrice = if (itemTotal >= BigDecimal(50000)) {
+            itemTotal
+        } else {
+            itemTotal + deliveryFee
+        }
+
 
         Order.new {
             this.user = user
             this.shippingStatus = shippingStatus
-            this.deliveryFee = deliveryFee
+            this.deliveryFee = if (itemTotal >= BigDecimal(50000)) BigDecimal.ZERO else deliveryFee
             this.userName = userName
             this.postalCode = postalCode
             this.address = address
