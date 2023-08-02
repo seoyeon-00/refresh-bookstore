@@ -16,10 +16,6 @@ class ProductService(private val productRepository: ProductRepository) {
         }
     }
 
-    fun getProductById(id: Int): ProductDto? = transaction {
-        productRepository.findById(id)?.let { toDto(it) }
-    }
-
     fun getProductByISBN(isbn: String): ProductDto? = transaction {
         productRepository.findByISBN(isbn)?.let { toDto(it) }
     }
@@ -46,9 +42,9 @@ class ProductService(private val productRepository: ProductRepository) {
         ).let { toDto(it) }
     }
 
-    fun updateProduct(id: Int, productDto: ProductDto): ProductDto? = transaction {
-        val productToUpdate = productRepository.findById(id)
-            ?: throw IllegalArgumentException("$id 값의 상품이 없습니다.")
+    fun updateProduct(isbn: String, productDto: ProductDto): ProductDto? = transaction {
+        val productToUpdate = productRepository.findByISBN(isbn)
+            ?: throw IllegalArgumentException("$isbn 값의 상품이 없습니다.")
 
         productRepository.update(
             productToUpdate.id.value,
@@ -64,9 +60,9 @@ class ProductService(private val productRepository: ProductRepository) {
         )?.let { toDto(it) }
     }
 
-    fun deleteProduct(id: Int): Boolean = transaction {
-        val productToDelete = productRepository.findById(id)
-            ?: throw IllegalArgumentException("$id 값의 상품이 없습니다.")
+    fun deleteProduct(isbn: String): Boolean = transaction {
+        val productToDelete = productRepository.findByISBN(isbn)
+            ?: throw IllegalArgumentException("$isbn 값의 상품이 없습니다.")
 
         productRepository.delete(productToDelete.id.value)
     }

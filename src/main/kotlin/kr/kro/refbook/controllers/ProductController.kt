@@ -17,13 +17,6 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity.ok(productService.getAllProducts(page, size))
     }
 
-    @GetMapping("/{id}")
-    fun getProductById(@PathVariable id: Int): ResponseEntity<ProductDto> {
-        return productService.getProductById(id)?.let {
-            ResponseEntity.ok(it)
-        } ?: ResponseEntity.notFound().build()
-    }
-
     @GetMapping("/isbn/{isbn}")
     fun getProductByISBN(@PathVariable isbn: String): ResponseEntity<ProductDto> {
         return productService.getProductByISBN(isbn)?.let {
@@ -42,16 +35,16 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity.ok(productService.createProduct(productDto))
     }
 
-    @PutMapping("/{id}")
-    fun updateProduct(@PathVariable id: Int, @RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
-        return productService.updateProduct(id, productDto)?.let {
+    @PutMapping("/isbn/{isbn}")
+    fun updateProduct(@PathVariable isbn: String, @RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
+        return productService.updateProduct(isbn, productDto)?.let {
             ResponseEntity.ok(it)
         } ?: ResponseEntity.notFound().build()
     }
 
-    @DeleteMapping("/{id}")
-    fun deleteProduct(@PathVariable id: Int): ResponseEntity<Void> {
-        return if (productService.deleteProduct(id)) {
+    @DeleteMapping("/isbn/{isbn}")
+    fun deleteProduct(@PathVariable isbn: String): ResponseEntity<Void> {
+        return if (productService.deleteProduct(isbn)) {
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.notFound().build()
