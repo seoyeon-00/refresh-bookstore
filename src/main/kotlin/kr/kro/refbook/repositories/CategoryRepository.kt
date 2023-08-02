@@ -17,8 +17,10 @@ class CategoryRepository {
         }
     }
 
-    fun findAll(): List<Category> = transaction {
-        Category.all().toList()
+    fun findAll(page: Int, size: Int): List<Category> = transaction {
+        Category.all()
+            .limit(n = size, offset = (size * (page - 1)).toLong())
+            .toList()
     }
 
     fun findById(id: Int): Category? = transaction {

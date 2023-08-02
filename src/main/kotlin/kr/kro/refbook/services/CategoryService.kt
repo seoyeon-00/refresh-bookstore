@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service
 @Service
 class CategoryService(private val categoryRepository: CategoryRepository) {
 
-    fun getAllCategories(): List<CategoryDto> = categoryRepository.findAll().map { category -> toDto(category) }
+    fun getAllCategories(page: Int, size: Int): List<CategoryDto> {
+        return categoryRepository.findAll(page, size)
+            .map { category -> toDto(category) }
+    }
 
     fun getCategoryById(id: Int): CategoryDto? = categoryRepository.findById(id)?.let { toDto(it) }
 
