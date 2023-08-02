@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 @Service
 class ProductService(private val productRepository: ProductRepository) {
 
-    fun getAllProducts(): List<ProductDto> = transaction {
-        productRepository.findAll().map { product ->
+    fun getAllProducts(page: Int, size: Int): List<ProductDto> = transaction {
+        productRepository.findAll(page, size).map { product ->
             toDto(product)
         }
     }

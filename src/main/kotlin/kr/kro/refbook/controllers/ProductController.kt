@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*
 class ProductController(private val productService: ProductService) {
 
     @GetMapping
-    fun getAllProducts(): ResponseEntity<List<ProductDto>> {
-        return ResponseEntity.ok(productService.getAllProducts())
+    fun getAllProducts(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<List<ProductDto>> {
+        return ResponseEntity.ok(productService.getAllProducts(page, size))
     }
 
     @GetMapping("/{id}")

@@ -13,8 +13,8 @@ class OrderService(
     private val orderRepository: OrderRepository,
 ) {
 
-    fun getAllOrders(): List<OrderDto> = transaction {
-        orderRepository.findAll().map { order ->
+    fun getAllOrders(page: Int, size: Int): List<OrderDto> = transaction {
+        orderRepository.findAll(page, size).map { order ->
             toDto(order)
         }
     }

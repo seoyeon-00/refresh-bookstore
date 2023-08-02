@@ -11,9 +11,13 @@ import org.springframework.web.bind.annotation.*
 class OrderController(private val orderService: OrderService) {
 
     @GetMapping
-    fun getAllOrders(): ResponseEntity<List<OrderDto>> {
-        return ResponseEntity.ok(orderService.getAllOrders())
+    fun getAllOrders(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<List<OrderDto>> {
+        return ResponseEntity.ok(orderService.getAllOrders(page, size))
     }
+
 
     @GetMapping("/{id}")
     fun getOrderById(@PathVariable id: Int): ResponseEntity<OrderDto> {

@@ -40,8 +40,10 @@ class OrderRepository(private val userRepository: UserRepository, private val or
     }
 
 
-    fun findAll(): List<Order> = transaction {
-        Order.all().toList()
+    fun findAll(page: Int, size: Int): List<Order> = transaction {
+        Order.all()
+            .limit(size, offset = (page * size).toLong())
+            .toList()
     }
 
     fun findById(id: Int): Order = transaction {

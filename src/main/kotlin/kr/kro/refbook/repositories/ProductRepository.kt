@@ -21,8 +21,10 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         }
     }
 
-    fun findAll(): List<Product> = transaction {
-        Product.all().toList()
+    fun findAll(page: Int, size: Int): List<Product> = transaction {
+        Product.all()
+            .limit(size, offset = (page * size).toLong())
+            .toList()
     }
 
     fun findById(id: Int): Product? = transaction {
