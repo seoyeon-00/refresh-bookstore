@@ -30,7 +30,7 @@ data class ProductDto(
     val publicationDate: LocalDate,
 
     @field:NotBlank
-    @field:Pattern(regexp = "^(97(8|9))?\\d{9}(\\d|X)$") // ISBN-10 or ISBN-13
+    @field:Pattern(regexp = "^(97([89]))?\\d{9}(\\d|X)$") // ISBN-10 or ISBN-13
     val isbn: String,
 
     @field:NotBlank

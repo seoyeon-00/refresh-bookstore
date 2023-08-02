@@ -30,7 +30,7 @@ class ProductService(private val productRepository: ProductRepository) {
 
     fun createProduct(productDto: ProductDto): ProductDto = transaction {
         val category = Category.findById(productDto.categoryId)
-            ?: throw IllegalArgumentException("No category with id ${productDto.categoryId} found.")
+            ?: throw IllegalArgumentException("카테고리 ${productDto.categoryId} 값을 찾을 수 없습니다.")
 
         productRepository.create(
             category.id.value,
@@ -48,7 +48,7 @@ class ProductService(private val productRepository: ProductRepository) {
 
     fun updateProduct(id: Int, productDto: ProductDto): ProductDto? = transaction {
         val productToUpdate = productRepository.findById(id)
-            ?: throw IllegalArgumentException("No product with id $id found.")
+            ?: throw IllegalArgumentException("$id 값의 상품이 없습니다.")
 
         productRepository.update(
             productToUpdate.id.value,
@@ -66,7 +66,7 @@ class ProductService(private val productRepository: ProductRepository) {
 
     fun deleteProduct(id: Int): Boolean = transaction {
         val productToDelete = productRepository.findById(id)
-            ?: throw IllegalArgumentException("No product with id $id found.")
+            ?: throw IllegalArgumentException("$id 값의 상품이 없습니다.")
 
         productRepository.delete(productToDelete.id.value)
     }

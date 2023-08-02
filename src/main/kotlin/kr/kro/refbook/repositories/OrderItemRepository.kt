@@ -27,8 +27,8 @@ class OrderItemRepository(private val productRepository: ProductRepository) {
     }
 
     fun create(orderId: Int, isbn: String, amount: Int): OrderItem = transaction {
-        val product = productRepository.findByISBN(isbn) ?: throw IllegalArgumentException("Product not found.")
-        val order = Order.findById(orderId) ?: throw IllegalArgumentException("Order not found.")
+        val product = productRepository.findByISBN(isbn) ?: throw IllegalArgumentException("상품을 찾을 수 없습니다.")
+        val order = Order.findById(orderId) ?: throw IllegalArgumentException("주문을 찾을 수 없습니다.")
 
         OrderItem.new {
             this.product = product

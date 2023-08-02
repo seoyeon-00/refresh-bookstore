@@ -26,7 +26,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         var itemTotal = BigDecimal.ZERO
         orderItemsDto.forEach { orderItemDto ->
             val product = productRepository.findByISBN(orderItemDto.isbn)
-                ?: throw IllegalArgumentException("Product not found.")
+                ?: throw IllegalArgumentException("해당 상품을 찾을 수 없습니다.")
             itemTotal += product.price * BigDecimal(orderItemDto.amount)
         }
 
@@ -47,7 +47,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
     }
 
     fun findById(id: Int): Order = transaction {
-        Order.findById(id) ?: throw IllegalArgumentException("Order with ID: $id not found.")
+        Order.findById(id) ?: throw IllegalArgumentException("주문 $id 를 찾을 수 없습니다.")
     }
 
     fun findByNumber(orderNumber: String): Order? = transaction {

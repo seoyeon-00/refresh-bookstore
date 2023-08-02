@@ -39,7 +39,7 @@ data class OrderDto(
     val detailAddress: String,
 
     @field:NotBlank
-    @field:Pattern(regexp = "^01(?:0|1|[6-9])[-]?(?:\\d{3}|\\d{4})[-]?\\d{4}$") // 휴대전화 번호
+    @field:Pattern(regexp = "^01(?:0|1|[6-9])-?(?:\\d{3}|\\d{4})-?\\d{4}$")
     val userPhone: String,
 
     @field:Length(max = 200)
