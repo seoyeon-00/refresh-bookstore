@@ -46,8 +46,13 @@ class UserService(
         return jwtTokenProvider.createToken(authentication)
     }
 
-    fun searchUser(id: Int): UserDtoResponse {
+    fun searchUserPassword(id: Int): UserDtoResponse {
         val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "Not found User with Id($id)")
+        return user.toDtoResponse()
+    }
+
+    fun searchUser(userEmail: String): UserDtoResponse {
+        val user: User = userRepository.findByEmail(userEmail) ?: throw InvalidInputException("email", "Not found User with Id($userEmail)")
         return user.toDtoResponse()
     }
 

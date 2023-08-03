@@ -49,7 +49,7 @@ class UserController(
     @PostMapping("/check")
     fun checkPassword(@RequestBody @Valid passwordAuthenticationDto: PasswordAuthenticationDto): BaseResponse<Unit> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        val response = userService.searchUser(userId)
+        val response = userService.searchUserPassword(userId)
         val hashedPassword = response.password
 
         if (bcryptPasswordEncoder.matches(passwordAuthenticationDto.password, hashedPassword)) {
@@ -69,10 +69,17 @@ class UserController(
         return BaseResponse(message = message)
     }
 
+    // @GetMapping("/info")
+    // fun searchMyInfo(): BaseResponse<UserDtoResponse> {
+    //     val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+    //     val response = userService.searchUser(userId)
+    //     return BaseResponse(data = response)
+    // }
+
     @GetMapping("/info")
     fun searchMyInfo(): BaseResponse<UserDtoResponse> {
-        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-        val response = userService.searchUser(userId)
+        val userEmail = (SecurityContextHolder.getContext().authentication.principal as CustomUser).username
+        val response = userService.searchUser(userEmail)
         return BaseResponse(data = response)
     }
 
