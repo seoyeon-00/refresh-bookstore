@@ -13,7 +13,7 @@ data class OrderDto(
     @field:NotBlank
     @field:Email
     @JsonProperty("email")
-    val email: String,
+    var email: String?,
 
     @field:NotNull
     val shippingStatus: ShippingStatus,
