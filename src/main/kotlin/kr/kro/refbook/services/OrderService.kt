@@ -30,7 +30,7 @@ class OrderService(
 
     fun createOrder(orderDto: OrderDto): OrderDto = transaction {
         orderRepository.create(
-            orderDto.email,
+            orderDto.email!!,
             orderDto.shippingStatus,
             orderDto.deliveryFee,
             orderDto.userName,
