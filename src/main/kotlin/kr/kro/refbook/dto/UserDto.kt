@@ -3,7 +3,9 @@ package kr.kro.refbook.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
+import org.hibernate.validator.constraints.Length
 import java.time.LocalDateTime
 
 data class UserDto(
@@ -25,11 +27,14 @@ data class UserDto(
     val password: String,
 
     @field:NotBlank
+    @field:Length(min = 1, max = 5)
     val postalCode: String,
 
     @field:NotBlank
+    @field:Length(min = 1, max = 100)
     val address: String,
 
+    @field:NotNull
     val detailAddress: String,
 
     @field:NotBlank
