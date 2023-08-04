@@ -28,9 +28,9 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/api/user/signup", "/api/user/login", "/api/user/admin/role/{id}", "/api/products").permitAll()
-                    .requestMatchers("/api/user", "/api/user/info", "/api/products/isbn/{isbn}", "/api/orders/{id}", "/api/orders/orderNumber/{orderNumber}", "/api/categories/{id}").authenticated()
-                    .requestMatchers(HttpMethod.POST, "/api/products", "/api/categories").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/products/isbn/{isbn}").hasRole("ADMIN")
+                    .requestMatchers("/api/user", "/api/user/info", "/api/products/isbn/{isbn}", "/api/orders/{id}", "/api/orders/orderNumber/{orderNumber}").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/products", "/api/categories/{id}").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/products/isbn/{isbn}", "/api/categories/{id}").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/products/isbn/{isbn}", "/api/categories/{id}").hasRole("ADMIN")
                     .requestMatchers("/api/user/admin/{id}", "/api/user/admin").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/orders").authenticated()
