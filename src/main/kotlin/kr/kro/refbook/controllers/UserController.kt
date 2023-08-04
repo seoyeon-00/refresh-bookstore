@@ -15,6 +15,8 @@ import kr.kro.refbook.services.UserService
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -24,34 +26,38 @@ class UserController(
     private val userRepository: UserRepository,
     private val bcryptPasswordEncoder: BCryptPasswordEncoder,
 ) {
-
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
         return userService.signUp(userDto)
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid loginDto: LoginDto): BaseResponse<TokenInfo> {
+    fun login(@RequestBody @Valid loginDto: LoginDto): ResponseEntity<String> {
         val user = userRepository.findByEmail(loginDto.email)
-
         if (user != null) {
             val hashedPassword = user.password
             if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
                 val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
                 val tokenInfo = userService.login(loginDtoWithHashedPassword)
-                return BaseResponse(data = tokenInfo)
+                val accessTokenValue = tokenInfo.accessToken
+
+                // Header에 Token 정보 추가하기
+                val responseHeaders = HttpHeaders()
+                responseHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ${accessTokenValue}")
+                return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body("Login successful")
             }
         }
         throw BadCredentialsException("Invalid email or password")
     }
 
-    // 비밀번호 일치 여부 확인
+    // 유저 - 패스워드 일치 여부 확인하기
     @PostMapping("/check")
     fun checkPassword(@RequestBody @Valid passwordAuthenticationDto: PasswordAuthenticationDto): BaseResponse<Unit> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
         val response = userService.searchUserPassword(userId)
         val hashedPassword = response.password
-
         if (bcryptPasswordEncoder.matches(passwordAuthenticationDto.password, hashedPassword)) {
             return BaseResponse(message = "비밀번호 인증이 완료되었습니다.")
         }
@@ -68,13 +74,6 @@ class UserController(
         }
         return BaseResponse(message = message)
     }
-
-    // @GetMapping("/info")
-    // fun searchMyInfo(): BaseResponse<UserDtoResponse> {
-    //     val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
-    //     val response = userService.searchUser(userId)
-    //     return BaseResponse(data = response)
-    // }
 
     @GetMapping("/info")
     fun searchMyInfo(): BaseResponse<UserDtoResponse> {
@@ -123,7 +122,6 @@ class UserController(
         } else {
             "User not found"
         }
-
         return BaseResponse(message = message)
     }
 }
