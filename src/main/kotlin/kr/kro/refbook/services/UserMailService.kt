@@ -8,7 +8,6 @@ import org.springframework.mail.MailSendException
 import org.springframework.core.io.ClassPathResource
 import org.springframework.util.FileCopyUtils
 import org.springframework.mail.javamail.MimeMessageHelper
-import javax.mail.internet.MimeMessage
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
