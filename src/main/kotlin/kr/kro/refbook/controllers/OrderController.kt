@@ -7,6 +7,7 @@ import kr.kro.refbook.services.OrderService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import kotlinx.coroutines.*
 
 @RestController
 @RequestMapping("api/orders")
@@ -38,7 +39,7 @@ class OrderController(private val orderService: OrderService) {
 
 
     @PostMapping
-    fun createOrder(@RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
+    suspend fun createOrder(@RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
         val userEmail = (SecurityContextHolder.getContext().authentication.principal as CustomUser).username
         if (orderDto.orderItems.isEmpty()) {
             throw IllegalArgumentException("적어도 하나 이상의 주문상품이 있어야 합니다.")
@@ -50,7 +51,7 @@ class OrderController(private val orderService: OrderService) {
 
 
     @PutMapping("/{id}")
-    fun updateOrder(@PathVariable id: Int, @RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
+    suspend fun updateOrder(@PathVariable id: Int, @RequestBody orderDto: OrderDto): ResponseEntity<OrderDto> {
         return orderService.updateOrder(id, orderDto)?.let {
             ResponseEntity.ok(it)
         } ?: ResponseEntity.notFound().build()

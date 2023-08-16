@@ -32,6 +32,10 @@ dependencies {
     implementation("javax.servlet:javax.servlet-api:4.0.1")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
+    // coroutines
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+
     // postgressql dependencies
     implementation("org.postgresql:postgresql")
 
