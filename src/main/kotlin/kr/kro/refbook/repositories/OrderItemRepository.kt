@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository
 @DependsOn("databaseConfig")
 class OrderItemRepository(private val productRepository: ProductRepository) {
 
+
     init {
         transaction {
             SchemaUtils.create(OrderItems)
@@ -45,5 +46,9 @@ class OrderItemRepository(private val productRepository: ProductRepository) {
 
     fun delete(id: Int): Boolean = transaction {
         OrderItem.findById(id)?.delete() != null
+    }
+
+    fun findByOrderId(orderId: Int): List<OrderItem> = transaction {
+        OrderItem.find { OrderItems.order eq orderId }.toList()
     }
 }

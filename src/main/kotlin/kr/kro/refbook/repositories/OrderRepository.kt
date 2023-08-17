@@ -16,6 +16,11 @@ import java.math.BigDecimal
 @DependsOn("databaseConfig")
 class OrderRepository(private val userRepository: UserRepository, private val orderItemRepository: OrderItemRepository, private val productRepository: ProductRepository) {
 
+    companion object {
+        private val FREE_SHIPPING_THRESHOLD = BigDecimal(50000)
+    }
+
+
     init {
         transaction {
             SchemaUtils.create(Orders)
@@ -26,15 +31,11 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         var itemTotal = BigDecimal.ZERO
         orderItemsDto.forEach { orderItemDto ->
             val product = productRepository.findByISBN(orderItemDto.isbn)
-                ?: throw IllegalArgumentException("해당 상품을 찾을 수 없습니다.")
+                ?: throw ProductNotFoundException("해당 상품을 찾을 수 없습니다.")
             itemTotal += product.price * BigDecimal(orderItemDto.amount)
         }
 
-        val totalPrice = if (itemTotal >= BigDecimal(50000)) {
-            itemTotal
-        } else {
-            itemTotal + deliveryFee
-        }
+        val totalPrice = if (itemTotal >= FREE_SHIPPING_THRESHOLD) itemTotal else itemTotal + deliveryFee
 
         return Pair(itemTotal, totalPrice)
     }
@@ -111,16 +112,39 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             this.userPhone = userPhone
             this.orderRequest = orderRequest
 
-            // clear existing order items
-            orderItems.forEach { it.delete() }
+            // Fetch the order items using findByOrderId method
+            val existingOrderItems = orderItemRepository.findByOrderId(id)
+
+            // Handle existing order items.
+            existingOrderItems.forEach { existingItem ->
+                val matchingDto = orderItemsDto.find { it.isbn == existingItem.product.isbn }
+                if (matchingDto != null) {
+                    // 기존 item을 수정합니다.
+                    existingItem.amount = matchingDto.amount
+                } else {
+                    // 기존 아이템을 삭제합니다.
+                    existingItem.delete()
+                }
+            }
+
+            // 새로운 아이템을 수정합니다.
+            orderItemsDto.forEach { dto ->
+                if (existingOrderItems.none { it.product.isbn == dto.isbn }) {
+                    orderItemRepository.create(this.id.value, dto.isbn, dto.amount)
+                }
+            }
 
             val (itemTotal, totalPrice) = calculateTotalPrice(orderItemsDto, deliveryFee)
             this.deliveryFee = if (itemTotal >= BigDecimal(50000)) BigDecimal.ZERO else deliveryFee
             this.totalPrice = totalPrice
-        }
+        } ?: throw OrderNotFoundException("주문 $id 를 찾을 수 없습니다.")
     }
+
 
     fun delete(id: Int): Boolean = transaction {
         Order.findById(id)?.delete() != null
     }
+
+    class ProductNotFoundException(message: String) : IllegalArgumentException(message)
+    class OrderNotFoundException(message: String) : IllegalArgumentException(message)
 }
