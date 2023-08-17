@@ -1,16 +1,13 @@
 package kr.kro.refbook.controllers
 
 import jakarta.validation.Valid
+import kr.kro.refbook.common.authority.JwtTokenProvider
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.common.dto.CustomUser
-import kr.kro.refbook.dto.LoginDto
-import kr.kro.refbook.dto.MemberRoleDto
-import kr.kro.refbook.dto.PasswordAuthenticationDto
-import kr.kro.refbook.dto.CheckEmailRequestDto
-import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.dto.UserDtoResponse
+import kr.kro.refbook.dto.*
 import kr.kro.refbook.repositories.UserRepository
+import kr.kro.refbook.services.RefreshTokenService
 import kr.kro.refbook.services.UserService
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
@@ -25,28 +22,25 @@ class UserController(
     private val userService: UserService,
     private val userRepository: UserRepository,
     private val bcryptPasswordEncoder: BCryptPasswordEncoder,
-) {
+    private val refreshTokenService: RefreshTokenService,
+    private val jwtTokenProvider: JwtTokenProvider,
+
+    ) {
     @PostMapping("/signup")
     fun signUp(@RequestBody @Valid userDto: UserDto): UserDto {
         return userService.signUp(userDto)
     }
 
     @PostMapping("/login")
-    fun login(@RequestBody @Valid loginDto: LoginDto): ResponseEntity<String> {
+    fun login(@RequestBody @Valid loginDto: LoginDto): ResponseEntity<Map<String, Any>> {
         val user = userRepository.findByEmail(loginDto.email)
         if (user != null) {
             val hashedPassword = user.password
             if (bcryptPasswordEncoder.matches(loginDto.password, hashedPassword)) {
                 val loginDtoWithHashedPassword = loginDto.copy(password = hashedPassword)
                 val tokenInfo = userService.login(loginDtoWithHashedPassword)
-                val accessTokenValue = tokenInfo.accessToken
 
-                // Header에 Token 정보 추가하기
-                val responseHeaders = HttpHeaders()
-                responseHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer ${accessTokenValue}")
-                return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .body("Login successful")
+                return ResponseEntity.ok(tokenInfo)
             }
         }
         throw BadCredentialsException("Invalid email or password")
@@ -124,4 +118,27 @@ class UserController(
         }
         return BaseResponse(message = message)
     }
+
+    @PostMapping("/refresh-token")
+    fun refreshToken(@RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<Map<String, Any>> {
+
+        if (refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)) {
+            val authentication = SecurityContextHolder.getContext().authentication
+            val newTokenInfo = jwtTokenProvider.createToken(authentication)
+
+            // 새로운 리프레시 토큰 생성하며 기존 토큰 삭제
+            val (newRefreshToken, expiration) = refreshTokenService.generateRefreshToken(refreshTokenRequest.refreshToken)
+
+            val responseBody = mapOf(
+                "grantType" to newTokenInfo.grantType,
+                "accessToken" to newTokenInfo.accessToken,
+                "refreshToken" to newRefreshToken,
+                "refreshTokenExpiration" to expiration  // expiration 정보 추가
+            )
+            return ResponseEntity.ok(responseBody)
+        } else {
+            throw BadCredentialsException("Invalid or expired refresh token")
+        }
+    }
+
 }

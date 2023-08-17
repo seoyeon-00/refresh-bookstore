@@ -39,12 +39,21 @@ class UserService(
         return toDto(newUser)
     }
 
-    fun login(loginDto: LoginDto): TokenInfo {
+    fun login(loginDto: LoginDto): Map<String, Any> {
         val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.email, loginDto.password)
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
-        return jwtTokenProvider.createToken(authentication)
+        val (accessTokenInfo, refreshTokenPair) = jwtTokenProvider.createTokens(authentication)
+        val (refreshToken, expiration) = refreshTokenPair
+
+        return mapOf(
+            "grantType" to accessTokenInfo.grantType,
+            "accessToken" to accessTokenInfo.accessToken,
+            "refreshToken" to refreshToken,
+            "refreshTokenExpiration" to expiration
+        )
     }
+
 
     fun searchUserPassword(id: Int): UserDtoResponse {
         val user: User = userRepository.findById(id) ?: throw InvalidInputException("id", "Not found User with Id($id)")

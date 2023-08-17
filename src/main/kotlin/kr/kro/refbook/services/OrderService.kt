@@ -8,7 +8,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import kr.kro.refbook.entities.tables.ShippingStatus
 
-import kr.kro.refbook.utils.MailServiceUtils
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.core.io.ClassPathResource
 import org.springframework.util.FileCopyUtils
@@ -41,7 +40,7 @@ class OrderService(
     suspend fun createOrder(orderDto: OrderDto): OrderDto? = coroutineScope {
         transaction {
             val email = orderDto.email ?: ""
-            val name = if (orderDto.userName.isNullOrBlank()) "회원" else orderDto.userName
+            val name = orderDto.userName.ifBlank { "회원" }
             
             val createdOrder = orderRepository.create(
                 orderDto.email!!,
@@ -65,7 +64,7 @@ class OrderService(
                 helper.setText(getHtmlText(htmlTemplate), true)
                 javaMailSender.send(message)
             }
-            createdOrder.let { toDto(it) }
+            toDto(createdOrder)
         }
     }
 
@@ -73,7 +72,7 @@ class OrderService(
         transaction {
             val existingOrder = orderRepository.findById(id)
             val email = orderDto.email ?: ""
-            val name = if (orderDto.userName.isNullOrBlank()) "회원" else orderDto.userName
+            val name = orderDto.userName.ifBlank { "회원" }
             val previousShippingStatus = existingOrder.shippingStatus
 
             val updatedOrder = orderRepository.update(
@@ -140,13 +139,12 @@ class OrderService(
                 )
             },
         )
-    
+
     private fun getHtmlText(htmlTemplate: String): String {
         val resource = ClassPathResource(htmlTemplate)
-        val htmlContent = FileCopyUtils.copyToString(
+        return FileCopyUtils.copyToString(
             InputStreamReader(resource.inputStream, StandardCharsets.UTF_8)
         )
-        return htmlContent
     }
 
 }

@@ -4,6 +4,8 @@ import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import kr.kro.refbook.common.dto.CustomUser
+import kr.kro.refbook.services.RefreshTokenService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -22,6 +24,9 @@ class JwtTokenProvider {
     lateinit var secretKey: String
 
     private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)) }
+
+    @Autowired
+    private lateinit var refreshTokenService: RefreshTokenService
 
     // Token 생성
     fun createToken(authentication: Authentication): TokenInfo {
@@ -45,6 +50,12 @@ class JwtTokenProvider {
             .compact()
 
         return TokenInfo("Bearer", accessToken)
+    }
+
+    fun createTokens(authentication: Authentication): Pair<TokenInfo, Pair<String, Long>> {
+        val accessTokenInfo = createToken(authentication)
+        val refreshTokenPair = refreshTokenService.generateRefreshToken()
+        return Pair(accessTokenInfo, refreshTokenPair)
     }
 
     // Token 정보 추출
@@ -95,4 +106,7 @@ class JwtTokenProvider {
             .build()
             .parseClaimsJws(token)
             .body
+
+
+
 }
