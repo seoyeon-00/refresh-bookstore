@@ -5,6 +5,7 @@ import kr.kro.refbook.common.authority.JwtTokenProvider
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.common.dto.CustomUser
+import kr.kro.refbook.utils.MailServiceUtils
 import kr.kro.refbook.dto.*
 import kr.kro.refbook.repositories.UserRepository
 import kr.kro.refbook.services.RefreshTokenService
@@ -88,6 +89,13 @@ class UserController(
         userDto.id = userId
         val response = userService.updateUser(userDto)
         return BaseResponse(data = response, message = "User updated successfully")
+    }
+
+    // 임시 비밀번호 발급하기
+    @PutMapping("/temporary")
+    fun updateUser(@RequestBody passwordFindDto: PasswordFindDto): BaseResponse<Unit> {
+        val response = userService.updateTemporaryPasswordUser(passwordFindDto)
+        return BaseResponse(message = "Temporary password updated successfully")
     }
 
     @PutMapping("/admin/role/{id}")

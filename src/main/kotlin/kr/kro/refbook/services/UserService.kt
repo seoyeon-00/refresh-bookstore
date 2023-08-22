@@ -4,11 +4,7 @@ import kr.kro.refbook.common.authority.JwtTokenProvider
 import kr.kro.refbook.common.authority.TokenInfo
 import kr.kro.refbook.common.exception.InvalidInputException
 import kr.kro.refbook.common.status.ROLE
-import kr.kro.refbook.dto.CheckEmailRequestDto
-import kr.kro.refbook.dto.LoginDto
-import kr.kro.refbook.dto.MemberRoleDto
-import kr.kro.refbook.dto.UserDto
-import kr.kro.refbook.dto.UserDtoResponse
+import kr.kro.refbook.dto.*
 import kr.kro.refbook.entities.models.MemberRole
 import kr.kro.refbook.entities.models.User
 import kr.kro.refbook.repositories.MemberRoleRepository
@@ -18,12 +14,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.stereotype.Service
 
+import kr.kro.refbook.utils.MailServiceUtils
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.core.io.ClassPathResource
+import org.springframework.util.FileCopyUtils
+import org.springframework.mail.javamail.MimeMessageHelper
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+
 @Service
 class UserService(
     private val userRepository: UserRepository,
     private val memberRoleRepository: MemberRoleRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
+    private val javaMailSender: JavaMailSender,
 ) {
 
     // 회원가입
@@ -88,6 +93,25 @@ class UserService(
         return toDto(user)
     }
 
+    fun updateTemporaryPasswordUser(passwordFindDto: PasswordFindDto): User {
+        val user = userRepository.findByEmail(passwordFindDto.email)
+        ?: throw IllegalArgumentException("User not found")
+
+        if (user.birth == passwordFindDto.birth) {
+            val temporaryPassword: String = MailServiceUtils.generateTemporaryPassword()
+            val message = javaMailSender.createMimeMessage()
+            val helper = MimeMessageHelper(message, true)
+            helper.setTo(passwordFindDto.email)
+            helper.setSubject("[Refresh Bookstore] 임시 비밀번호가 발급되었습니다")
+            helper.setText(getHtmlText(temporaryPassword), true)
+            javaMailSender.send(message)
+            
+            return userRepository.updatePassword(user.id.value, temporaryPassword)
+        }
+
+        throw IllegalArgumentException("User birth does not match")
+    }
+
     fun deleteUser(id: Int): Boolean {
         val userToDelete = userRepository.findById(id)
             ?: throw IllegalArgumentException("No product with id $id found.")
@@ -104,6 +128,7 @@ class UserService(
         address = user.address,
         detailAddress = user.detailAddress,
         phone = user.phone,
+        birth = user.birth,
         isAdmin = user.isAdmin,
         createdAt = user.createdAt,
     )
@@ -113,4 +138,13 @@ class UserService(
         role = memberRole.role,
         member = memberRole.member.id.value,
     )
+
+    private fun getHtmlText(temporaryPassword: String): String {
+        val resource = ClassPathResource("email-FindPassword.html")
+        val htmlContent = FileCopyUtils.copyToString(
+            InputStreamReader(resource.inputStream, StandardCharsets.UTF_8)
+        ).replace("\${temporaryPassword}", temporaryPassword)
+
+        return htmlContent
+    }
 }
