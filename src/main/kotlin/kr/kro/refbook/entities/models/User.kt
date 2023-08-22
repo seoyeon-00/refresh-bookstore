@@ -20,6 +20,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
     var address by Users.address
     var detailAddress by Users.detailAddress
     var phone by Users.phone
+    var birth by Users.birth
     var isAdmin by Users.isAdmin
     var createdAt by Users.createdAt
 
@@ -40,6 +41,7 @@ class User(id: EntityID<Int>) : IntEntity(id) {
             address = address,
             detailAddress = detailAddress,
             phone = phone,
+            birth = birth,
             isAdmin = isAdmin,
         )
     }

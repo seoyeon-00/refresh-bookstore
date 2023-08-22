@@ -13,6 +13,7 @@ object Users : IntIdTable() {
     val address: Column<String> = varchar("address", 100)
     val detailAddress: Column<String> = varchar("detailAddress", 100)
     val phone: Column<String> = varchar("phone", 20)
+    val birth: Column<String> = varchar("birth", 20)
     val isAdmin: Column<Boolean> = bool("isAdmin").default(false)
     val createdAt: Column<LocalDateTime> = datetime("createdAt").default(LocalDateTime.now())
 }

@@ -40,6 +40,7 @@ class UserRepository(
             address = userDto.address
             detailAddress = userDto.detailAddress
             phone = userDto.phone
+            birth = userDto.birth
             isAdmin = userDto.isAdmin ?: false
             createdAt = userDto.createdAt ?: LocalDateTime.now()
         }.apply {
@@ -76,7 +77,15 @@ class UserRepository(
             address = userDto.address
             detailAddress = userDto.detailAddress
             phone = userDto.phone
+            birth = userDto.birth
         }
+        user
+    }
+
+    fun updatePassword(userId: Int, temporaryPassword: String): User = transaction {
+        val user = User.findById(userId) ?: error("User not found")
+        user.password = bcryptPasswordEncoder.encode(temporaryPassword)
+        
         user
     }
 

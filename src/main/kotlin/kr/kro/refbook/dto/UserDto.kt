@@ -41,6 +41,13 @@ data class UserDto(
     @field:Pattern(regexp = "^01(?:0|1|[6-9])[-]?(?:\\d{3}|\\d{4})[-]?\\d{4}$")
     val phone: String,
 
+    @field:NotBlank
+    @field:Pattern(
+        regexp = "^(19|20)\\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
+        message = "유효하지 않은 생년월일 형식입니다.",
+    )
+    val birth: String,
+
     val isAdmin: Boolean?,
     val createdAt: LocalDateTime?,
 
@@ -63,6 +70,7 @@ data class UserDtoResponse(
     val address: String,
     val detailAddress: String,
     val phone: String,
+    val birth: String,
     val isAdmin: Boolean,
 )
 
@@ -75,4 +83,12 @@ data class CheckEmailRequestDto(
     @field:NotBlank
     @field:Email
     val email: String
+)
+
+data class PasswordFindDto(
+    @field:NotBlank
+    val email: String,
+
+    @field:NotBlank
+    val birth: String,
 )
