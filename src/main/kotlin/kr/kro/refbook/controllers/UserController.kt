@@ -94,7 +94,7 @@ class UserController(
     // 임시 비밀번호 발급하기
     @PutMapping("/temporary")
     fun updateUser(@RequestBody passwordFindDto: PasswordFindDto): BaseResponse<Unit> {
-        val response = userService.updateTemporaryPasswordUser(passwordFindDto)
+        userService.updateTemporaryPasswordUser(passwordFindDto)
         return BaseResponse(message = "Temporary password updated successfully")
     }
 
