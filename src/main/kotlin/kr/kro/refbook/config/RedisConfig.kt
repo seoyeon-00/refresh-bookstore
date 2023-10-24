@@ -14,24 +14,15 @@ import java.net.URI
 @Configuration
 public class RedisConfig {
 
-    @Value("\${spring.data.redis.url}")
-    private lateinit var redisUrl: String
+    @Value("\${spring.data.redis.host}")
+    private lateinit var host: String
+
+    @Value("\${spring.data.redis.port}")
+    private var port: Int = 0
 
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
-        val uri = URI(redisUrl)
-        val redisStandaloneConfiguration = RedisStandaloneConfiguration()
-
-        redisStandaloneConfiguration.hostName = uri.host
-        redisStandaloneConfiguration.port = uri.port
-
-        // 패스워드가 있을 경우 적용
-        if (uri.userInfo != null) {
-            val password = uri.userInfo.split(":").last()
-            redisStandaloneConfiguration.password = RedisPassword.of(password)
-        }
-
-        return LettuceConnectionFactory(redisStandaloneConfiguration)
+        return LettuceConnectionFactory(host, port)
     }
 
     @Bean
