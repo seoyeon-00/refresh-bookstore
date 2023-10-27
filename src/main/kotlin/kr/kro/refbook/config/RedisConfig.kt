@@ -20,9 +20,17 @@ public class RedisConfig {
     @Value("\${spring.data.redis.port}")
     private var port: Int = 0
 
+    @Value("\${spring.data.redis.password}")
+    private lateinit var password: String;
+
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
-        return LettuceConnectionFactory(host, port)
+        val redisStandaloneConfiguration = RedisStandaloneConfiguration()
+        redisStandaloneConfiguration.hostName = host
+        redisStandaloneConfiguration.port = port
+        redisStandaloneConfiguration.password =  RedisPassword.of(password)
+
+        return LettuceConnectionFactory(redisStandaloneConfiguration)
     }
 
     @Bean
