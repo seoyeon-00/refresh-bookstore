@@ -65,6 +65,10 @@ dependencies {
     // validation dependencies
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0") // nanoid 추가
+
+    //cors
+    implementation ("org.springframework.security:spring-security-web")
+    implementation ("org.springframework.security:spring-security-config")
 }
 
 tasks.withType<KotlinCompile> {
