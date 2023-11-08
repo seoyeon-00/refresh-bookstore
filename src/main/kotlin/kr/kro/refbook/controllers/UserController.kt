@@ -128,7 +128,7 @@ class UserController(
         return BaseResponse(message = message)
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/refresh")
     fun refreshToken(@RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<Map<String, Any>> {
 
         if (refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)) {
