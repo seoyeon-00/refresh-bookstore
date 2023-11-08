@@ -27,7 +27,8 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/user/signup", "/api/user/signup","/api/user/refresh", "/api/user/checkEmail", "/api/user/admin/role/{id}", "/api/products").permitAll()
+                    .requestMatchers("/api/user/signup", "/api/user/signup", "/api/user/checkEmail", "/api/user/admin/role/{id}", "/api/products").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/user/refresh").permitAll()
                     .requestMatchers("/api/user", "/api/user/info", "/api/user/check","/api/products/isbn/{isbn}", "/api/orders/{id}", "/api/orders/orderNumber/{orderNumber}").authenticated()
                     .requestMatchers(HttpMethod.POST, "/api/products", "/api/categories/{id}").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PUT, "/api/products/isbn/{isbn}", "/api/categories/{id}").hasRole("ADMIN")
