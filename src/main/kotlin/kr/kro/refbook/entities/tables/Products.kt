@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 
 object Products : IntIdTable() {
     val category: Column<EntityID<Int>> = reference("category_id", Categories)
-    val title: Column<String> = varchar("title", 50)
+    val title: Column<String> = varchar("title", 100)
     val author: Column<String> = varchar("author", 50)
     val publisher: Column<String> = varchar("publisher", 100)
     val publicationDate: Column<LocalDate> = date("publication_date")
