@@ -31,6 +31,12 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         Product.find { Products.isbn eq isbn }.singleOrNull()
     }
 
+    fun findByCategory(page: Int, size: Int, category: Int): List<Product> = transaction {
+        Product.find { Products.category eq category }
+            .limit(size, offset = (page * size).toLong())
+            .toList()
+    }
+
     fun findByKeyword(keyword: String): List<Product> = transaction {
         Product.find {
             Op.build {

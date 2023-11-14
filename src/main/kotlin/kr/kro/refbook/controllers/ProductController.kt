@@ -24,6 +24,15 @@ class ProductController(private val productService: ProductService) {
         } ?: ResponseEntity.notFound().build()
     }
 
+    @GetMapping("/category")
+    fun getProductByCategory(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int,
+        @RequestParam(defaultValue = "1") category: Int
+    ): ResponseEntity<List<ProductDto>> {
+        return ResponseEntity.ok(productService.getProductByCategory(page, size, category))
+    }
+
     // 검색 기능 - keyword로 책 조회하기
     @GetMapping("/search")
     fun getProductbyKeyword(@RequestParam keyword: String): ResponseEntity<List<ProductDto>> {
