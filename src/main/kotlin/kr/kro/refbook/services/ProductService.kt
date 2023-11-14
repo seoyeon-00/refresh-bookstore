@@ -26,6 +26,12 @@ class ProductService(private val productRepository: ProductRepository) {
         }
     }
 
+    fun getProductByCategoryAll(category: Int): List<ProductDto> = transaction {
+        productRepository.findByCategoryAll(category).map { product ->
+            toDto(product)
+        }
+    }
+
     fun getProductbyKeyword(keyword: String): List<ProductDto> = transaction {
         productRepository.findByKeyword(keyword).map { toDto(it) }
     }
