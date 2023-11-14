@@ -37,6 +37,10 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
             .toList()
     }
 
+    fun findByCategoryAll(category: Int): List<Product> = transaction {
+        Product.find { Products.category eq category }.toList()
+    }
+
     fun findByKeyword(keyword: String): List<Product> = transaction {
         Product.find {
             Op.build {
