@@ -29,7 +29,7 @@ class OrderController(private val orderService: OrderService) {
         } ?: ResponseEntity.notFound().build()
     }
 
-    @GetMapping("/{user}")
+    @GetMapping("/user/{user}")
     fun getOrderByUser(@PathVariable user: Int): ResponseEntity<List<OrderDto>> {
         val orders = orderService.getOrderByUser(user)
         return if (orders.isNotEmpty()) {
