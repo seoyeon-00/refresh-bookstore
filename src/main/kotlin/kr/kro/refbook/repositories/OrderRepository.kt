@@ -51,6 +51,10 @@ class OrderRepository(private val userRepository: UserRepository, private val or
         Order.findById(id) ?: throw IllegalArgumentException("주문 $id 를 찾을 수 없습니다.")
     }
 
+    fun findByUser(user: Int): List<Order> = transaction {
+        Order.find { Orders.user eq user }.toList() 
+    }
+
     fun findByNumber(orderNumber: String): Order? = transaction {
         Order.find { Orders.orderNumber eq orderNumber }.singleOrNull()
     }

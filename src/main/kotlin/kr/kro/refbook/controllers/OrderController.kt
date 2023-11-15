@@ -29,6 +29,15 @@ class OrderController(private val orderService: OrderService) {
         } ?: ResponseEntity.notFound().build()
     }
 
+    @GetMapping("/{user}")
+    fun getOrderByUser(@PathVariable user: Int): ResponseEntity<List<OrderDto>> {
+        val orders = orderService.getOrderByUser(user)
+        return if (orders.isNotEmpty()) {
+            ResponseEntity.ok(orders)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
 
     @GetMapping("orderNumber/{orderNumber}")
     fun getOrderByNumber(@PathVariable orderNumber: String): ResponseEntity<OrderDto> {

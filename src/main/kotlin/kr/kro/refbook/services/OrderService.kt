@@ -32,6 +32,11 @@ class OrderService(
         toDto(orderRepository.findById(id))
     }
 
+    fun getOrderByUser(user: Int): List<OrderDto> = transaction {
+        orderRepository.findByUser(user).map { order ->
+            toDto(order)
+        }
+    }
 
     fun getOrderByNumber(orderNumber: String): OrderDto? = transaction {
         orderRepository.findByNumber(orderNumber)?.let { toDto(it) }
