@@ -30,7 +30,7 @@ object Orders : IntIdTable() {
     val userPhone: Column<String> = varchar("user_phone", 15)
     val orderRequest: Column<String> = text("order_request")
     val totalPrice: Column<BigDecimal> = decimal("total_price", precision = 10, scale = 2)
-    val orderNumber: Column<String> = varchar("order_number", 10).default(NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, customAlphabet, 10))
+    val orderNumber: Column<String> = varchar("order_number", 10)
     val createdAt: Column<LocalDateTime> = datetime("created_at").default(LocalDateTime.now())
     val updatedAt: Column<LocalDateTime> = datetime("updated_at").default(LocalDateTime.now())
 }

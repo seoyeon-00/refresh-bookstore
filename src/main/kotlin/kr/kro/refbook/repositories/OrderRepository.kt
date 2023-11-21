@@ -10,6 +10,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import java.math.BigDecimal
 
 @Repository
@@ -75,6 +76,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             ?: throw IllegalArgumentException("Invalid user email")
 
         val (itemTotal, totalPrice) = calculateTotalPrice(orderItemsDto, deliveryFee)
+        val customAlphabet: CharArray = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
 
         Order.new {
             this.user = user
@@ -87,6 +89,7 @@ class OrderRepository(private val userRepository: UserRepository, private val or
             this.userPhone = userPhone
             this.orderRequest = orderRequest
             this.totalPrice = totalPrice
+            this.orderNumber = NanoIdUtils.randomNanoId(NanoIdUtils.DEFAULT_NUMBER_GENERATOR, customAlphabet, 10)
         }.also { order ->
             orderItemsDto.forEach { orderItemDto ->
                 orderItemRepository.create(order.id.value, orderItemDto.isbn, orderItemDto.amount)
