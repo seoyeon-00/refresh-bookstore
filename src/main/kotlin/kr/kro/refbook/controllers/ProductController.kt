@@ -1,9 +1,12 @@
 package kr.kro.refbook.controllers
 
 import kr.kro.refbook.dto.ProductDto
+import kr.kro.refbook.dto.PaginationDto
+import kr.kro.refbook.dto.ProductWithPaginationDto
 import kr.kro.refbook.services.ProductService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import kotlin.math.ceil
 
 @RestController
 @RequestMapping("api/products")
@@ -13,8 +16,21 @@ class ProductController(private val productService: ProductService) {
     fun getAllProducts(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
-    ): ResponseEntity<List<ProductDto>> {
-        return ResponseEntity.ok(productService.getAllProducts(page, size))
+    ): ResponseEntity<ProductWithPaginationDto> {
+        val products = productService.getAllProducts(page, size)
+        val totalProducts = productService.getTotalProducts()
+
+        // 클라이언트에게 전체 페이지 수를 전송
+        val totalPages = kotlin.math.ceil(totalProducts.toDouble() / size).toInt()
+
+        val paginationDto = PaginationDto(
+            totalPages = totalPages,
+            currentPage = page,
+            pageSize = size,
+            totalItems = totalProducts
+        )
+
+        return ResponseEntity.ok(ProductWithPaginationDto(products, paginationDto))
     }
 
     @GetMapping("/isbn/{isbn}")

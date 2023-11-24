@@ -27,6 +27,12 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
             .toList()
     }
 
+    fun findAllProduct(): List<Product>{
+        return transaction {
+            Product.all().toList()
+        }
+    }
+
     fun findByISBN(isbn: String): Product? = transaction {
         Product.find { Products.isbn eq isbn }.singleOrNull()
     }

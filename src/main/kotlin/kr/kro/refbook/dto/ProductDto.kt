@@ -47,3 +47,15 @@ data class ProductDto(
     @field:NotNull
     val isBestSeller: Boolean,
 )
+
+data class ProductWithPaginationDto(
+    val products: List<ProductDto>,
+    val pagination: PaginationDto
+)
+
+data class PaginationDto(
+    val totalPages: Int,
+    val currentPage: Int,
+    val pageSize: Int,
+    val totalItems: Long
+)

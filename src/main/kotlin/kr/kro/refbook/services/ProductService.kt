@@ -16,6 +16,18 @@ class ProductService(private val productRepository: ProductRepository) {
         }
     }
 
+    // fun getTotalProducts(): List<ProductDto> {
+    //     return transaction {
+    //         productRepository.findAllProduct().map { it -> toDto(it) }
+    //     }
+    // }
+
+    fun getTotalProducts(): Long {
+        return transaction {
+            Product.all().count()
+        }
+    }
+    
     fun getProductByISBN(isbn: String): ProductDto? = transaction {
         productRepository.findByISBN(isbn)?.let { toDto(it) }
     }
