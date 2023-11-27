@@ -13,6 +13,8 @@ import kr.kro.refbook.services.UserService
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -24,6 +26,7 @@ class UserController(
     private val userRepository: UserRepository,
     private val bcryptPasswordEncoder: BCryptPasswordEncoder,
     private val refreshTokenService: RefreshTokenService,
+    private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
 
     ) {
@@ -132,18 +135,21 @@ class UserController(
     fun refreshToken(@RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<Map<String, Any>> {
 
         if (refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)) {
-            val authentication = SecurityContextHolder.getContext().authentication
-            val newTokenInfo = jwtTokenProvider.createToken(authentication)
+            val authenticationToken = UsernamePasswordAuthenticationToken(refreshTokenRequest.email, refreshTokenRequest.password)
+            val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
-            // 새로운 리프레시 토큰 생성하며 기존 토큰 삭제
-            val (newRefreshToken, expiration) = refreshTokenService.generateRefreshToken(refreshTokenRequest.refreshToken)
+            val (accessTokenInfo, refreshTokenPair) = jwtTokenProvider.createTokens(authentication)
+            val (refreshToken, expiration) = refreshTokenPair
+
+            refreshTokenService.deleteRefreshToken(refreshTokenRequest.refreshToken)
 
             val responseBody = mapOf(
-                "grantType" to newTokenInfo.grantType,
-                "accessToken" to newTokenInfo.accessToken,
-                "refreshToken" to newRefreshToken,
-                "refreshTokenExpiration" to expiration  // expiration 정보 추가
+                "grantType" to accessTokenInfo.grantType,
+                "accessToken" to accessTokenInfo.accessToken,
+                "refreshToken" to refreshToken,
+                "refreshTokenExpiration" to expiration 
             )
+
             return ResponseEntity.ok(responseBody)
         } else {
             throw BadCredentialsException("Invalid or expired refresh token")
