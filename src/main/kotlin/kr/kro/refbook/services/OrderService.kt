@@ -4,6 +4,7 @@ import kr.kro.refbook.dto.OrderDto
 import kr.kro.refbook.dto.OrderItemDto
 import kr.kro.refbook.entities.models.Order
 import kr.kro.refbook.repositories.OrderRepository
+import kr.kro.refbook.repositories.OrderItemRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import kr.kro.refbook.entities.tables.ShippingStatus
@@ -19,6 +20,7 @@ import kotlinx.coroutines.*
 @Service
 class OrderService(
     private val orderRepository: OrderRepository,
+    private val orderItemRepository: OrderItemRepository,
     private val javaMailSender: JavaMailSender,
 ) {
 
@@ -116,6 +118,8 @@ class OrderService(
     }
 
     fun deleteOrder(id: Int): Boolean = transaction {
+        val order = orderRepository.findById(id)
+        order.orderItems.forEach { orderItemRepository.delete(it.id.value) }
         orderRepository.delete(id)
     }
 
