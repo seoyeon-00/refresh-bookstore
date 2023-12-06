@@ -7,6 +7,11 @@ import kr.kro.refbook.services.ProductService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import kotlin.math.ceil
+import com.github.kittinunf.fuel.httpGet
+import com.github.kittinunf.result.Result
+import java.nio.charset.StandardCharsets
+import org.json.JSONArray
+import org.json.JSONObject
 
 @RestController
 @RequestMapping("api/products")
@@ -62,7 +67,27 @@ class ProductController(private val productService: ProductService) {
 
     @PostMapping
     fun createProduct(@RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
-        return ResponseEntity.ok(productService.createProduct(productDto))
+
+        val isbn = productDto.isbn
+        val openApiUrl = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbreading941508001&Query=$isbn&Output=js"
+
+        val (_, _, result) = openApiUrl
+            .httpGet()
+            .responseString(StandardCharsets.UTF_8)
+
+        when (result) {
+            is Result.Success -> {
+                val openApiData = result.get()
+                val imagePathFromApi = extractImagePathFromOpenApiData(openApiData)
+
+                val updatedProductDto = productDto.copy(imagePath = imagePathFromApi)
+                return ResponseEntity.ok(productService.createProduct(updatedProductDto))
+            }
+            is Result.Failure -> {
+                println("Error while fetching OpenAPI data: ${result.error}")
+                return ResponseEntity.status(500).build()
+            }
+        }
     }
 
     @PutMapping("/isbn/{isbn}")
@@ -80,4 +105,20 @@ class ProductController(private val productService: ProductService) {
             ResponseEntity.notFound().build()
         }
     }
+
+    fun extractImagePathFromOpenApiData(openApiData: String): String {
+        try {
+            val jsonObject = JSONObject(openApiData)
+            val itemsArray = jsonObject.getJSONArray("item")
+
+            if (itemsArray.length() > 0) {
+                val firstItem = itemsArray.getJSONObject(0)
+                return firstItem.optString("cover", "https://example.com/image.jpg")
+            }
+        } catch (e: Exception) {
+            println("OpenAPI 응답을 파싱하는 중 오류 발생: $e")
+        }
+
+        return "https://example.com/image.jpg"
+        }
 }

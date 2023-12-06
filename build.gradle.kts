@@ -22,6 +22,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
+    implementation("org.json:json:20210307")
 
     // SMTP
     implementation("org.springframework.boot:spring-boot-starter-mail")
