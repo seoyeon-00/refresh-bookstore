@@ -90,11 +90,37 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
+    // @PutMapping("/isbn/{isbn}")
+    // fun updateProduct(@PathVariable isbn: String, @RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
+    //     return productService.updateProduct(isbn, productDto)?.let {
+    //         ResponseEntity.ok(it)
+    //     } ?: ResponseEntity.notFound().build()
+    // }
+
     @PutMapping("/isbn/{isbn}")
     fun updateProduct(@PathVariable isbn: String, @RequestBody productDto: ProductDto): ResponseEntity<ProductDto> {
-        return productService.updateProduct(isbn, productDto)?.let {
-            ResponseEntity.ok(it)
-        } ?: ResponseEntity.notFound().build()
+        
+        val newIsbn = productDto.isbn
+        val openApiUrl = "https://www.aladin.co.kr/ttb/api/ItemSearch.aspx?ttbkey=ttbreading941508001&Query=$newIsbn&Output=js"
+
+        val (_, _, result) = openApiUrl
+            .httpGet()
+            .responseString(StandardCharsets.UTF_8)
+
+        when (result) {
+            is Result.Success -> {
+                val openApiData = result.get()
+                val imagePathFromApi = extractImagePathFromOpenApiData(openApiData)
+
+                val updatedProductDto = productDto.copy(imagePath = imagePathFromApi)
+                return ResponseEntity.ok(productService.updateProduct(isbn, updatedProductDto))
+            }
+            is Result.Failure -> {
+                println("Error while fetching OpenAPI data: ${result.error}")
+                return ResponseEntity.status(500).build()
+            }
+        }
+
     }
 
     @DeleteMapping("/isbn/{isbn}")
@@ -120,5 +146,5 @@ class ProductController(private val productService: ProductService) {
         }
 
         return "https://example.com/image.jpg"
-        }
+    }
 }
