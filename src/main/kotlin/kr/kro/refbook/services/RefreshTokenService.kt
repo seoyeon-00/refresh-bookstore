@@ -1,15 +1,20 @@
 package kr.kro.refbook.services
 
+import kr.kro.refbook.common.dto.CustomUser
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ValueOperations
 import org.springframework.stereotype.Service
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 @Service
 class RefreshTokenService {
@@ -20,26 +25,35 @@ class RefreshTokenService {
     @Value("\${refresh.token.expiration}")
     private lateinit var refreshTokenExpiration: String
 
-    private val secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256)
+     @Value("\${jwt.secret}")
+    lateinit var secretKey: String
 
-    fun generateRefreshToken(oldRefreshToken: String? = null): Pair<String, Long> {
+    private val key by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)) }
+
+    fun generateRefreshToken(authentication: Authentication, oldRefreshToken: String? = null): Pair<String, Long> {
         oldRefreshToken?.let { deleteRefreshToken(it) }
 
-        //val refreshToken = UUID.randomUUID().toString()
-        val refreshToken = createJwtToken()
+        val refreshToken = createJwtToken(authentication)
         saveRefreshToken(refreshToken)
+        
         return Pair(refreshToken, refreshTokenExpiration.toLong())
     }
 
-    private fun createJwtToken(): String {
+    private fun createJwtToken(authentication: Authentication): String {
         val now = Date()
         val expiration = Date(now.time + refreshTokenExpiration.toLong() * 1000) // seconds to milliseconds
+        val authorities: String = authentication
+            .authorities
+            .joinToString(",", transform = GrantedAuthority::getAuthority)
 
         return Jwts.builder()
             .setSubject("refreshToken")
             .setIssuedAt(now)
+            .claim("auth", authorities)
+            .claim("userId", (authentication.principal as CustomUser).userId)
+            .claim("username", (authentication.principal as CustomUser).username)
             .setExpiration(expiration)
-            .signWith(secretKey, SignatureAlgorithm.HS256)
+            .signWith(key, SignatureAlgorithm.HS256)
             .compact()
     }
 

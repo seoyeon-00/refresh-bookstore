@@ -135,19 +135,17 @@ class UserController(
     fun refreshToken(@RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<Map<String, Any>> {
 
         if (refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)) {
-            val authenticationToken = UsernamePasswordAuthenticationToken(refreshTokenRequest.email, refreshTokenRequest.password)
-            val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
-            val (accessTokenInfo, refreshTokenPair) = jwtTokenProvider.createTokens(authentication)
-            val (refreshToken, expiration) = refreshTokenPair
+            val authentication = SecurityContextHolder.getContext().authentication
+            val newTokenInfo = jwtTokenProvider.createToken(authentication)
 
-            refreshTokenService.deleteRefreshToken(refreshTokenRequest.refreshToken)
+             val (newRefreshToken, expiration) = refreshTokenService.generateRefreshToken(authentication, refreshTokenRequest.refreshToken)
 
             val responseBody = mapOf(
-                "grantType" to accessTokenInfo.grantType,
-                "accessToken" to accessTokenInfo.accessToken,
-                "refreshToken" to refreshToken,
-                "refreshTokenExpiration" to expiration 
+                "grantType" to newTokenInfo.grantType,
+                "accessToken" to newTokenInfo.accessToken,
+                "refreshToken" to newRefreshToken,
+                "refreshTokenExpiration" to expiration
             )
 
             return ResponseEntity.ok(responseBody)
