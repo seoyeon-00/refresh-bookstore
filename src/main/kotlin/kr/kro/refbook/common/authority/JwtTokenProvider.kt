@@ -54,12 +54,14 @@ class JwtTokenProvider {
 
     fun createTokens(authentication: Authentication): Pair<TokenInfo, Pair<String, Long>> {
         val accessTokenInfo = createToken(authentication)
-        val refreshTokenPair = refreshTokenService.generateRefreshToken()
+        // val refreshTokenPair = refreshTokenService.generateRefreshToken()
+        val refreshTokenPair = refreshTokenService.generateRefreshToken(authentication)
         return Pair(accessTokenInfo, refreshTokenPair)
     }
 
     // Token 정보 추출
     fun getAuthentication(token: String): Authentication {
+        println(token)
         val claims: Claims = getClaims(token)
 
         val auth = claims["auth"] ?: throw RuntimeException("잘못된 토큰입니다.")
