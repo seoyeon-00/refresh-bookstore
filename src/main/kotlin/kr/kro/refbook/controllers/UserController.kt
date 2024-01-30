@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import io.jsonwebtoken.*
 
 @RestController
 @RequestMapping("/api/user")
@@ -136,7 +137,14 @@ class UserController(
 
         if (refreshTokenService.validateRefreshToken(refreshTokenRequest.refreshToken)) {
 
-            val authentication = SecurityContextHolder.getContext().authentication
+            val claims: Claims = jwtTokenProvider.getClaims(refreshTokenRequest.refreshToken)
+            println(claims["userId"])
+
+            val user = userService.searchUserPassword(claims["userId"] as Int)
+            val authenticationToken = UsernamePasswordAuthenticationToken(user.email, user.password)
+            val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
+
+            //val authentication = SecurityContextHolder.getContext().authentication
             val newTokenInfo = jwtTokenProvider.createToken(authentication)
 
              val (newRefreshToken, expiration) = refreshTokenService.generateRefreshToken(authentication, refreshTokenRequest.refreshToken)

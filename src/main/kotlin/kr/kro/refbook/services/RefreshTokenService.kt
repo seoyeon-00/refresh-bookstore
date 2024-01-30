@@ -50,7 +50,7 @@ class RefreshTokenService {
             .setSubject("refreshToken")
             .setIssuedAt(now)
             // .claim("auth", authorities)
-            // .claim("userId", (authentication.principal as CustomUser).userId)
+            .claim("userId", (authentication.principal as CustomUser).userId)
             // .claim("username", (authentication.principal as CustomUser).username)
             .setExpiration(expiration)
             .signWith(key, SignatureAlgorithm.HS256)
