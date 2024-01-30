@@ -102,13 +102,11 @@ class JwtTokenProvider {
         return false
     }
 
-    private fun getClaims(token: String): Claims =
+    fun getClaims(token: String): Claims =
         Jwts.parserBuilder()
             .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
-
-
 
 }
