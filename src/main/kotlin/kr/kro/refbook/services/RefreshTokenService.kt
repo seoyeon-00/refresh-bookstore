@@ -42,16 +42,16 @@ class RefreshTokenService {
     private fun createJwtToken(authentication: Authentication): String {
         val now = Date()
         val expiration = Date(now.time + refreshTokenExpiration.toLong() * 1000) // seconds to milliseconds
-        val authorities: String = authentication
-            .authorities
-            .joinToString(",", transform = GrantedAuthority::getAuthority)
+        // val authorities: String = authentication
+        //     .authorities
+        //     .joinToString(",", transform = GrantedAuthority::getAuthority)
 
         return Jwts.builder()
             .setSubject("refreshToken")
             .setIssuedAt(now)
-            .claim("auth", authorities)
-            .claim("userId", (authentication.principal as CustomUser).userId)
-            .claim("username", (authentication.principal as CustomUser).username)
+            // .claim("auth", authorities)
+            // .claim("userId", (authentication.principal as CustomUser).userId)
+            // .claim("username", (authentication.principal as CustomUser).username)
             .setExpiration(expiration)
             .signWith(key, SignatureAlgorithm.HS256)
             .compact()
