@@ -15,11 +15,11 @@ data class ProductDto(
     val categoryId: Int,
 
     @field:NotBlank
-    @field:Length(min = 1, max = 100)
+    @field:Length(min = 1, max = 150)
     val title: String,
 
     @field:NotBlank
-    @field:Length(min = 1, max = 50)
+    @field:Length(min = 1, max = 100)
     val author: String,
 
     @field:NotBlank
