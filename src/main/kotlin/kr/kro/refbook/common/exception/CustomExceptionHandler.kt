@@ -3,6 +3,7 @@ package kr.kro.refbook.common.exception
 import kr.kro.refbook.common.dto.BaseResponse
 import kr.kro.refbook.common.status.ResultCode
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.validation.FieldError
@@ -39,6 +40,8 @@ class CustomExceptionHandler {
     @ExceptionHandler(Exception::class)
     protected fun defaultException(ex: Exception): ResponseEntity<BaseResponse<Map<String, String>>> {
         val errors = mapOf("미처리 에러" to (ex.message ?: "Not Exception Message"))
-        return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), HttpStatus.BAD_REQUEST)
+        val headers = HttpHeaders()
+        headers.add("Access-Control-Allow-Origin", "*") 
+        return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), headers, HttpStatus.BAD_REQUEST)
     }
 }
