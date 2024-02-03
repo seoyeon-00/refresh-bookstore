@@ -74,7 +74,6 @@ class UserController(
         return BaseResponse(message = message)
     }
 
-    @CrossOrigin(origins = ["http://localhost:3000"])
     @GetMapping("/info")
     fun searchMyInfo(): BaseResponse<UserDtoResponse> {
         val userEmail = (SecurityContextHolder.getContext().authentication.principal as CustomUser).username
