@@ -16,7 +16,8 @@ class CorsConfig {
         config.allowedOrigins = listOf("http://localhost:3000", "https://refresh-bookstore-frontend-qggshl9a0-seoyeon-00.vercel.app/","https://refresh-bookstore-frontend-git-feature-ksy-seoyeon-00.vercel.app/")
         config.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
         config.allowedHeaders = listOf("Origin", "X-Requested-With", "Content-Type", "Authorization", "Oauth-Token")
-        config.exposedHeaders = listOf("*")
+        // config.exposedHeaders = listOf("*")
+        config.exposedHeaders = listOf("Authorization", "Oauth-Token")
 
         val source: UrlBasedCorsConfigurationSource = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)

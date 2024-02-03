@@ -40,8 +40,6 @@ class CustomExceptionHandler {
     @ExceptionHandler(Exception::class)
     protected fun defaultException(ex: Exception): ResponseEntity<BaseResponse<Map<String, String>>> {
         val errors = mapOf("미처리 에러" to (ex.message ?: "Not Exception Message"))
-        val headers = HttpHeaders()
-        headers.add("Access-Control-Allow-Origin", "*") 
-        return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), headers, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(BaseResponse(ResultCode.ERROR.name, errors, ResultCode.ERROR.msg), HttpStatus.BAD_REQUEST)
     }
 }
