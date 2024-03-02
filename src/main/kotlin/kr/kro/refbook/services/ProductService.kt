@@ -63,9 +63,13 @@ class ProductService(private val productRepository: ProductRepository) {
     fun updateProduct(isbn: String, productDto: ProductDto): ProductDto? = transaction {
         val productToUpdate = productRepository.findByISBN(isbn)
             ?: throw IllegalArgumentException("$isbn 값의 상품이 없습니다.")
+        
+        val category = Category.findById(productDto.categoryId)
+            ?: throw IllegalArgumentException("카테고리 ${productDto.categoryId} 값을 찾을 수 없습니다.")
 
         productRepository.update(
             productToUpdate.id.value,
+            category.id.value,
             productDto.title,
             productDto.author,
             productDto.publisher,
