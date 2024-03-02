@@ -91,6 +91,7 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
 
     fun update(
         id: Int,
+        categoryId: Int,
         title: String,
         author: String,
         publisher: String,
@@ -101,8 +102,13 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         imagePath: String,
         isBestSeller: Boolean,
     ): Product? = transaction {
+        
+        val category = categoryRepository.findById(categoryId)
+            ?: throw IllegalArgumentException("Invalid category ID")
+
         Product.findById(id)?.apply {
             this.title = title
+            this.category = category
             this.author = author
             this.publisher = publisher
             this.publicationDate = publicationDate
