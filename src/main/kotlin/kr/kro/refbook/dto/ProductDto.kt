@@ -62,7 +62,7 @@ data class PaginationDto(
 
 data class ProductPreviewDto(
     val id: Int, 
-    val category: Int, 
+    val categoryId: Int, 
     val title: String, 
     val price: BigDecimal,
     val isbn: String,
