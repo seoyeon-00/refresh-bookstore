@@ -49,7 +49,7 @@ data class ProductDto(
 )
 
 data class ProductWithPaginationDto(
-    val products: List<ProductDto>,
+    val products: List<ProductPreviewDto>,
     val pagination: PaginationDto
 )
 
@@ -58,4 +58,13 @@ data class PaginationDto(
     val currentPage: Int,
     val pageSize: Int,
     val totalItems: Long
+)
+
+data class ProductPreviewDto(
+    val id: Int, 
+    val category: Int, 
+    val title: String, 
+    val price: BigDecimal,
+    val isbn: String,
+    val imagePath: String
 )

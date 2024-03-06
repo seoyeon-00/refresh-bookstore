@@ -1,6 +1,7 @@
 package kr.kro.refbook.services
 
 import kr.kro.refbook.dto.ProductDto
+import kr.kro.refbook.dto.ProductPreviewDto
 import kr.kro.refbook.entities.models.Category
 import kr.kro.refbook.entities.models.Product
 import kr.kro.refbook.repositories.ProductRepository
@@ -14,6 +15,10 @@ class ProductService(private val productRepository: ProductRepository) {
         productRepository.findAll(page, size).map { product ->
             toDto(product)
         }
+    }
+
+    fun getProductsByPreview(page: Int, size: Int): List<ProductPreviewDto> = transaction {
+        productRepository.findPreviewProduct(page, size)
     }
 
     fun getTotalProducts(): Long {
