@@ -22,7 +22,8 @@ class ProductController(private val productService: ProductService) {
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int
     ): ResponseEntity<ProductWithPaginationDto> {
-        val products = productService.getAllProducts(page, size)
+        // val products = productService.getAllProducts(page, size)
+        val products = productService.getProductsByPreview(page, size)
         val totalProducts = productService.getTotalProducts()
 
         // 클라이언트에게 전체 페이지 수를 전송

@@ -2,14 +2,18 @@ package kr.kro.refbook.repositories
 
 import kr.kro.refbook.entities.models.Product
 import kr.kro.refbook.entities.tables.Products
-import org.jetbrains.exposed.sql.Op
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.or
+// import org.jetbrains.exposed.sql.Op
+// import org.jetbrains.exposed.sql.SchemaUtils
+// import org.jetbrains.exposed.sql.or
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.context.annotation.DependsOn
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.util.*
+import org.jetbrains.exposed.sql.selectAll
+import kr.kro.refbook.dto.ProductPreviewDto
 
 @Repository
 @DependsOn("databaseConfig")
@@ -25,6 +29,21 @@ class ProductRepository(private val categoryRepository: CategoryRepository) {
         Product.all()
             .limit(size, offset = (page * size).toLong())
             .toList()
+    }
+
+    fun findPreviewProduct(page: Int, size: Int): List<ProductPreviewDto> = transaction {
+        Products.selectAll()
+            .limit(size, offset = (page * size).toLong())
+            .map {
+                ProductPreviewDto(
+                    it[Products.id].value,
+                    it[Products.category].value,
+                    it[Products.title],
+                    it[Products.price],
+                    it[Products.isbn],
+                    it[Products.imagePath]
+                )
+            }
     }
 
     fun findAllProduct(): List<Product>{
